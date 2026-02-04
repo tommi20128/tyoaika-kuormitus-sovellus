@@ -1,12 +1,9 @@
-// app/index.tsx
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function HomePage() {
-
+export default function HistoryPage() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tervetuloa sovelluksen etusivulle!</Text>
+      <Text style={styles.title}>Historia sivu!</Text>
     </View>
   );
 }
