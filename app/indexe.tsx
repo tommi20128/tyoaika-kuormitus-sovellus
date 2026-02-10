@@ -34,7 +34,7 @@ export default function IndexPage() {
         secureTextEntry
       />
 
-      <CustomButton title="Rekisteröidy" onPress={handleRegister} />
+    <CustomButton title="Rekisteröidy" onPress={handleRegister} />
       <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
     </View>
   );

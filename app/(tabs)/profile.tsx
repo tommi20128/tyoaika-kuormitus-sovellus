@@ -8,7 +8,7 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     // Tähän myöhemmin kirjautuminen ulos
-    router.replace('/'); // Pitäisi logata ulos ja mennä kirjautumissivulle
+    router.replace('/indexe'); // Menee kirjautumissivulle
   };
 
   const handleChangePassword = () => {
