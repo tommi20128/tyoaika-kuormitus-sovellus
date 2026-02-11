@@ -3,6 +3,7 @@ import { View, Text, TextInput, Button, Alert } from "react-native";
 import { db, collection, addDoc, serverTimestamp } from "../Config"; 
 import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function Register() {
   const [title, setTitle] = useState("");
@@ -15,27 +16,33 @@ export default function Register() {
     router.push("/");
   }
 
-  const handleRegister = async () => {
-    if (!email || !password || !title) {
-      Alert.alert("Virhe", "Täytä kaikki kentät");
-      return;
-    }
-
-    try {
-      await addDoc(collection(db, "users"), {
-        email: email,
-        password: password, 
-        title: title,
-        createdAt: serverTimestamp(),
-      });
-
-      Alert.alert("Onnistui", "Käyttäjä luotu");
-      router.push("/");
-    } catch (error) {
-      console.error(error);
-      Alert.alert("Virhe", "Käyttäjän luonti epäonnistui");
-    }
+const handleRegister = async () => {
+  if (!email || !password || !title) {
+    Alert.alert("Virhe", "Täytä kaikki kentät");
+    return;
   }
+
+  const auth = getAuth();
+
+  try {
+
+    await createUserWithEmailAndPassword(auth, email, password);
+
+    await addDoc(collection(db, "users"), {
+      email: email,
+      password: password, 
+      title: title,
+      createdAt: serverTimestamp(),
+    });
+
+    Alert.alert("Onnistui", "Käyttäjä luotu");
+
+
+  } catch (error) {
+    console.error(error);
+    Alert.alert("Virhe", "Käyttäjän luonti epäonnistui");
+  }
+};
 
   return (
     <View style={styles.container}>
