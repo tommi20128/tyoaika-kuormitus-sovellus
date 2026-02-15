@@ -1,6 +1,30 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { useState, useEffect } from "react";
+import { getAuth } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../Config"; 
 
 export default function HomePage() {
+
+  const [firstName,setFirstName] = useState("");
+
+  useEffect(() => {
+  const fetchName = async () => {
+    const user = getAuth().currentUser;
+    if (!user) return;
+    console.log(user)
+
+
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    setFirstName(docSnap.data()!.firstName);
+  };
+  fetchName();
+  console.log(firstName)
+  console.log(Error)
+}, []);
+
+
+
   // Staattiset arvot testaukseen
   const todayHours = 6; // työtunnit tänään
   const todayLoad = 5; // kuormitus 1-10
@@ -23,7 +47,7 @@ export default function HomePage() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.welcome}>Tervetuloa, Keijo!</Text>
+      <Text style={styles.welcome}>Tervetuloa, {firstName}!</Text>
 
       {/* Päivän kortti */}
       <View style={styles.card}>

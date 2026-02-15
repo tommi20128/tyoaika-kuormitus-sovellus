@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore"
 import { getAuth,  } from "firebase/auth";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -25,6 +25,9 @@ export {
   app,
   auth,
   db,
+  doc,
+  getDoc,
+  setDoc,
   getAuth,
   collection, 
   addDoc, 

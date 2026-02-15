@@ -1,46 +1,32 @@
 import CustomButton from "@/components/CustomButton";
 import { Alert, View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { db, doc, getDoc } from "../Config"; 
 import { router } from "expo-router";
 import { useState } from "react";
 
 export default function IndexPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const [error, setError] = useState(null);
   const auth = getAuth();
 
- /* const handleLogin = () => {
-    router.replace('/(tabs)');
-  };*/
 
-const handleLogin = () => {
-  if (email === '' || password === '') {
-    console.log(Error)
-    Alert.alert("Tarkista kentät");
-  } else {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        
-        router.replace('/(tabs)');
-        console.log("Kirjautuminen onnistui")
-
-        if (!setEmail) {
-          console.log("Error")
-          Alert.alert("Väärä sähköposti tai salasana");
-          return;
-        }
-      });
-  }
-};
-
+const handleLogin = () => { if (email === '' || password === '') 
+  { Alert.alert("Tarkista kentät");
+    return; } 
+    signInWithEmailAndPassword(auth, email, password) 
+    .then((userCredential) => { console.log("Kirjautuminen onnistui");
+       router.replace('/(tabs)'); })
+       .catch((error) => 
+        { console.log(error); 
+        Alert.alert("Väärä sähköposti tai salasana");
+       });
+       };
 
 
   const handleRegister = () => {
     router.push('/register');
   };
-
-
 
 
   return (

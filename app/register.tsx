@@ -1,46 +1,59 @@
 import { useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
-import { db, collection, addDoc, serverTimestamp } from "../Config"; 
+import { db, doc, collection, setDoc, serverTimestamp } from "../Config"; 
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from "expo-router";
 import { StyleSheet } from "react-native";
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 export default function Register() {
   const [title, setTitle] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");""
+  const [firstName,setFirstName] = useState("");
 
   const router = useRouter();
 
   const handleBackToLogin = () => {
-    router.push("/");
+    router.replace("/indexe"); 
   }
-
 const handleRegister = async () => {
-  if (!email || !password || !title) {
+  if (!email || !password || !title || !firstName) {
     Alert.alert("Virhe", "Täytä kaikki kentät");
     return;
   }
 
-  const auth = getAuth();
-
   try {
+    const auth = getAuth();
 
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = userCredential.user.uid;
 
-    await addDoc(collection(db, "users"), {
-      email: email,
-      password: password, 
-      title: title,
+    await setDoc(doc(db, "users", uid), {
+      uid,
+      firstName,
+      email,
+      password,  
+      title,
       createdAt: serverTimestamp(),
     });
 
-    Alert.alert("Onnistui", "Käyttäjä luotu");
 
+    Alert.alert(
+      "",
+      "Käyttäjä luotu",
+      [
+        {
+          text: "OK",
+          onPress: () => {
+            router.replace("/indexe");
+          },
+        },
+      ]
+    );
 
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    Alert.alert("Virhe", "Käyttäjän luonti epäonnistui");
+    Alert.alert("Virhe", error.message || "Käyttäjän luonti epäonnistui");
   }
 };
 
@@ -48,6 +61,14 @@ const handleRegister = async () => {
     <View style={styles.container}>
       <Text style={styles.title}>Rekisteröinti</Text>
 
+
+            <TextInput
+        style={styles.input}
+        placeholder="Etunimi"
+        value={firstName}
+        onChangeText={setFirstName}
+        autoCapitalize="none"
+      />
       <TextInput
         style={styles.input}
         placeholder="Sähköposti"
