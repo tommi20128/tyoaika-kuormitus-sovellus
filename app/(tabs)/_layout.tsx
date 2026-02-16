@@ -8,7 +8,7 @@ export default function TabsLayout() {
 
   const handleLogout = () => {
     // Tähän myöhemmin kirjautuminen ulos
-    router.replace('/indexe'); // Menee kirjautumissivulle, tarviiko jotain erityistä?
+    router.replace('/'); // Menee kirjautumissivulle, tarviiko jotain erityistä?
   };
 
   return (
@@ -25,7 +25,7 @@ export default function TabsLayout() {
        }}
     >
       <Tabs.Screen
-        name="index"
+        name="frontpage"
         options={{
           title: 'Etusivu',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,

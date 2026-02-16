@@ -10,47 +10,47 @@ export default function IndexPage() {
   const [password, setPassword] = useState("");
   const auth = getAuth();
 
-
-const handleLogin = () => { if (email === '' || password === '') 
+  const handleLogin = () => { if (email === '' || password === '') 
   { Alert.alert("Tarkista kentät");
     return; } 
     signInWithEmailAndPassword(auth, email, password) 
     .then((userCredential) => { console.log("Kirjautuminen onnistui");
-       router.replace('/(tabs)'); })
+       router.replace('/(tabs)/frontpage'); })
        .catch((error) => 
         { console.log(error); 
         Alert.alert("Väärä sähköposti tai salasana");
        });
-       };
-
+      };
 
   const handleRegister = () => {
     router.push('/register');
   };
 
+  const handleSupervisorLogin = () => {
+    router.replace('/(supervisor)/mainpage');
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tervetuloa sovellukseemme!</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Sähköposti"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Salasana"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
-      <CustomButton title="Rekisteröidy" onPress={handleRegister} />
-
-     
+          <Text style={styles.title}>Tervetuloa sovellukseemme!</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Sähköposti"
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+    
+          <TextInput
+            style={styles.input}
+            placeholder="Salasana"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+    <CustomButton title="Rekisteröidy" onPress={handleRegister} />
+    <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
+    <CustomButton title="Kirjaudu esihenkilönä" onPress={handleSupervisorLogin} />
     </View>
   );
 }

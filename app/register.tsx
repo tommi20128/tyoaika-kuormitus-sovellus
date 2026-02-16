@@ -14,7 +14,7 @@ export default function Register() {
   const router = useRouter();
 
   const handleBackToLogin = () => {
-    router.replace("/indexe"); 
+    router.replace("/"); 
   }
 const handleRegister = async () => {
   if (!email || !password || !title || !firstName) {
@@ -45,7 +45,7 @@ const handleRegister = async () => {
         {
           text: "OK",
           onPress: () => {
-            router.replace("/indexe");
+            router.replace("/");
           },
         },
       ]

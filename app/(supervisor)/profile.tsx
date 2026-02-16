@@ -26,9 +26,9 @@ export default function ProfilePage() {
       />
 
       {/* Käyttäjätiedot */}
-      <Text style={styles.name}>Keijo Käyttäjä</Text>
-      <Text style={styles.name}>Titteli: Nöyrä työntekijä</Text>
-      <Text style={styles.email}>keijokayttaja@example.com</Text>
+      <Text style={styles.name}>Jouko Johtaja </Text>
+      <Text style={styles.name}>Titteli: Herra Isoherra</Text>
+      <Text style={styles.email}>joukojohtaja@example.com</Text>
 
       {/* Salasanan vaihto */}
       <TextInput

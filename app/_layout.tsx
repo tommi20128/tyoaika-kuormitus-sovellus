@@ -11,9 +11,10 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="indexe" />
+        <Stack.Screen name="index" />
         <Stack.Screen name="register" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="(supervisor)" />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
