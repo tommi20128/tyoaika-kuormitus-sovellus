@@ -1,28 +1,42 @@
 import CustomButton from "@/components/CustomButton";
 import { Alert, View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { db, doc, getDoc } from "../Config"; 
 import { router } from "expo-router";
 import { useState } from "react";
 
 export default function IndexPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const auth = getAuth();
 
-  const handleLogin = () => {
-    router.replace('/(tabs)');
-  };
+
+const handleLogin = () => { if (email === '' || password === '') 
+  { Alert.alert("Tarkista kentät");
+    return; } 
+    signInWithEmailAndPassword(auth, email, password) 
+    .then((userCredential) => { console.log("Kirjautuminen onnistui");
+       router.replace('/(tabs)'); })
+       .catch((error) => 
+        { console.log(error); 
+        Alert.alert("Väärä sähköposti tai salasana");
+       });
+       };
+
 
   const handleRegister = () => {
     router.push('/register');
   };
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tervetuloa sovellukseemme!</Text>
       <TextInput
         style={styles.input}
-        placeholder="Käyttäjätunnus"
-        value={username}
-        onChangeText={setUsername}
+        placeholder="Sähköposti"
+        value={email}
+        onChangeText={setEmail}
         autoCapitalize="none"
       />
 
@@ -33,9 +47,10 @@ export default function IndexPage() {
         onChangeText={setPassword}
         secureTextEntry
       />
-
-    <CustomButton title="Rekisteröidy" onPress={handleRegister} />
       <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
+      <CustomButton title="Rekisteröidy" onPress={handleRegister} />
+
+     
     </View>
   );
 }
