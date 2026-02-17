@@ -1,7 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import { Alert, View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { db, doc, getDoc } from "../Config"; 
 import { router } from "expo-router";
 import { useState } from "react";
 
@@ -10,47 +9,52 @@ export default function IndexPage() {
   const [password, setPassword] = useState("");
   const auth = getAuth();
 
-  const handleLogin = () => { if (email === '' || password === '') 
-  { Alert.alert("Tarkista kentät");
-    return; } 
-    signInWithEmailAndPassword(auth, email, password) 
-    .then((userCredential) => { console.log("Kirjautuminen onnistui");
-       router.replace('/(tabs)/frontpage'); })
-       .catch((error) => 
-        { console.log(error); 
+  const handleLogin = () => {
+    if (email === '' || password === '') {
+      Alert.alert("Tarkista kentät");
+      return;
+    }
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log("Kirjautuminen onnistui");
+        router.replace('/(tabs)/frontpage');
+      })
+      .catch((error) => {
+        console.log(error);
         Alert.alert("Väärä sähköposti tai salasana");
-       });
-      };
+      });
+  };
 
   const handleRegister = () => {
     router.push('/register');
   };
 
+  // Esihenkilöllä ei ole vielä yhteyttä Firebaseen, joten ohjataan suoraan esihenkilönäkymään
   const handleSupervisorLogin = () => {
     router.replace('/(supervisor)/mainpage');
   }
 
   return (
     <View style={styles.container}>
-          <Text style={styles.title}>Tervetuloa sovellukseemme!</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Sähköposti"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-          />
-    
-          <TextInput
-            style={styles.input}
-            placeholder="Salasana"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-    <CustomButton title="Rekisteröidy" onPress={handleRegister} />
-    <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
-    <CustomButton title="Kirjaudu esihenkilönä" onPress={handleSupervisorLogin} />
+      <Text style={styles.title}>Tervetuloa sovellukseemme!</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Sähköposti"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Salasana"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
+      <CustomButton title="Rekisteröidy" onPress={handleRegister} />
+      <CustomButton title="Kirjaudu esihenkilönä" onPress={handleSupervisorLogin} />
     </View>
   );
 }

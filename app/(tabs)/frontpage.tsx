@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useState, useEffect, useCallback } from "react";
-import { getAuth } from "firebase/auth";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../Config";
 import InfoCard from '@/components/InfoCard';
 import InfoRow from '@/components/InfoRow';
+import { useAuth } from '@/context/AuthContext';
 
 interface WorkEntry {
   date: string;
@@ -18,6 +18,7 @@ interface WorkEntry {
 }
 
 export default function HomePage() {
+  const { user, loading } = useAuth();
 
   const [firstName, setFirstName] = useState('');
   const [todayEntry, setTodayEntry] = useState<WorkEntry | null>(null);
@@ -25,16 +26,8 @@ export default function HomePage() {
   const [monthSummary, setMonthSummary] = useState<any>(null);
   const [totalSummary, setTotalSummary] = useState<any>(null);
 
-  const auth = getAuth();
-  const user = auth.currentUser;
   const todayId = new Date().toISOString().split("T")[0];
 
-  // Kovakoodatut tavoitteet. 
-  // Ei huomioida kuukausien pituuseroja tai lomia tms. 
-  // Oletetaan, että tavoitteet on asetettu siten, että ne huomioivat nämä tekijät.
-  const WEEK_GOAL = 37.5;
-  const MONTH_GOAL = 165;
-  const TOTAL_GOAL = 660; // koko työsuhteen tavoite. Muutetaan niin että laskee ensimmäisestä kirjaukseta nykyiseen päivään
   const DAILY_TARGET = 7.5; // tuntia / arkipäivä
 
   // Haetaan käyttäjän etunimi
@@ -82,7 +75,7 @@ export default function HomePage() {
           arr.length ? arr.reduce((acc, e) => acc + (e[key] as number || 0), 0) / arr.length : 0;
 
 
-        // Viikon kirjaukset: alkaen ensimmäisestä kirjauspäivästä
+        // Viikon kirjaukset: alkaen ensimmäisestä kirjauspäivästä tai viikon alusta
         const weekStart = new Date();
         weekStart.setDate(now.getDate() - now.getDay());
         const effectiveWeekStart = firstDate > weekStart ? firstDate : weekStart;
@@ -127,7 +120,7 @@ export default function HomePage() {
           hours: Math.floor(weekMinutes / 60),
           minutes: weekMinutes % 60,
           load: average(weekEntries, "load1").toFixed(1),
-          stress1: average(weekEntries, "stressLoad1").toFixed(1),
+          stress1: average(weekEntries, "stressLoad1").toFixed(1), // Yhdistetäänkö näitä tietoja myöhemmin?
           stress2: average(weekEntries, "stressLoad2").toFixed(1),
           stress3: average(weekEntries, "averageStress").toFixed(1),
           goalDiff: weekMinutes / 60 - weekGoal,
@@ -139,7 +132,7 @@ export default function HomePage() {
           hours: Math.floor(monthMinutes / 60),
           minutes: monthMinutes % 60,
           load: average(monthEntries, "load1").toFixed(1),
-          stress1: average(monthEntries, "stressLoad1").toFixed(1),
+          stress1: average(monthEntries, "stressLoad1").toFixed(1), // Yhdistetäänkö näitä tietoja myöhemmin?
           stress2: average(monthEntries, "stressLoad2").toFixed(1),
           stress3: average(monthEntries, "averageStress").toFixed(1),
           goalDiff: monthMinutes / 60 - monthGoal,
@@ -196,7 +189,7 @@ export default function HomePage() {
             value={
               weekSummary.goalDiff >= 0
                 ? `Edellä tavoitteesta +${Math.floor(weekSummary.goalDiff)} h ${Math.round((weekSummary.goalDiff % 1) * 60)} min`
-                : `Tavoitteeseen ${Math.floor(Math.abs(weekSummary.goalDiff))} h ${Math.round((Math.abs(weekSummary.goalDiff) % 1) * 60)} min`
+                : `Jäljessä ${Math.floor(Math.abs(weekSummary.goalDiff))} h ${Math.round((Math.abs(weekSummary.goalDiff) % 1) * 60)} min`
             }
           />
           <InfoRow label="Kuormitus" value={`${weekSummary.load}/10`} />
@@ -215,7 +208,7 @@ export default function HomePage() {
             value={
               monthSummary.goalDiff >= 0
                 ? `Edellä tavoitteesta +${Math.floor(monthSummary.goalDiff)} h ${Math.round((monthSummary.goalDiff % 1) * 60)} min edellä`
-                : `Tavoitteeseen ${Math.floor(Math.abs(monthSummary.goalDiff))} h ${Math.round((Math.abs(monthSummary.goalDiff) % 1) * 60)} min`
+                : `Jäljessä ${Math.floor(Math.abs(monthSummary.goalDiff))} h ${Math.round((Math.abs(monthSummary.goalDiff) % 1) * 60)} min`
             }
           />
           <InfoRow label="Kuormitus" value={`${monthSummary.load}/10`} />

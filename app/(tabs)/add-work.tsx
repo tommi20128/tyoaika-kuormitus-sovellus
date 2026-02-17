@@ -9,23 +9,19 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-
 import { useState, useEffect } from "react";
 import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { db } from "@/Config";
+import { useAuth } from '@/context/AuthContext';
 
 export default function AddWorkPage() {
-
+  const { user, loading } = useAuth();
   const [hours, setHours] = useState("");
   const [minutes, setMinutes] = useState("");
   const [load1, setLoad1] = useState("");
   const [stressLoad1, setStressLoad1] = useState("");
   const [stressLoad2, setStressLoad2] = useState("");
   const [comment, setComment] = useState("");
-
-  const auth = getAuth();
-  const user = auth.currentUser;
 
   const todayId = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
@@ -40,7 +36,6 @@ export default function AddWorkPage() {
       if (snap.exists()) {
         const data = snap.data();
         const totalMinutes = data.totalMinutes;
-
         const h = Math.floor(totalMinutes / 60);
         const m = totalMinutes % 60;
 
@@ -56,6 +51,7 @@ export default function AddWorkPage() {
     fetchTodayEntry();
   }, []);
 
+  // Tallennetaan päivän kirjaus
   const handleSave = async () => {
     try {
       if (!user) return;
@@ -84,12 +80,12 @@ export default function AddWorkPage() {
       }
 
       if (parsedLoad1 < 1 || parsedLoad1 > 10) {
-        Alert.alert("Virhe", "Kuormitus 1–10.");
+        Alert.alert("Virhe", "Kuormitus pitää olla välillä 1–10.");
         return;
       }
 
       if (parsedstressLoad1 < 1 || parsedstressLoad1 > 10 || parsedstressLoad2 < 1 || parsedstressLoad2 > 10) {
-        Alert.alert("Virhe", "Stressikuormitus 1–10.");
+        Alert.alert("Virhe", "Stressikuormitus pitää olla välillä 1–10.");
         return;
       }
 
@@ -111,7 +107,6 @@ export default function AddWorkPage() {
       });
 
       Alert.alert("Tallennettu", "Päivän kirjaus tallennettu.");
-
     } catch (error) {
       console.error(error);
       Alert.alert("Virhe", "Tallennus epäonnistui.");
@@ -125,7 +120,6 @@ export default function AddWorkPage() {
     >
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Lisää työaika</Text>
-
         <Text style={styles.label}>Työaika (tunnit ja minuutit)</Text>
         <View style={styles.row}>
           <TextInput
@@ -143,7 +137,6 @@ export default function AddWorkPage() {
             onChangeText={setMinutes}
           />
         </View>
-
         <Text style={styles.label}>Kuinka kuormittavana koit tämän työpäivän? (1–10)</Text>
         <TextInput
           style={styles.input}
@@ -151,7 +144,6 @@ export default function AddWorkPage() {
           value={load1}
           onChangeText={setLoad1}
         />
-
         <Text style={styles.label}>Stressikysymys 1 (1–10)</Text>
         <TextInput
           style={styles.input}
@@ -159,7 +151,6 @@ export default function AddWorkPage() {
           value={stressLoad1}
           onChangeText={setStressLoad1}
         />
-
         <Text style={styles.label}>Stressikysymys 2 (1–10)</Text>
         <TextInput
           style={styles.input}
@@ -167,7 +158,6 @@ export default function AddWorkPage() {
           value={stressLoad2}
           onChangeText={setStressLoad2}
         />
-
         <Text style={styles.label}>Kommentti</Text>
         <TextInput
           style={styles.textArea}
@@ -175,7 +165,6 @@ export default function AddWorkPage() {
           value={comment}
           onChangeText={setComment}
         />
-
         <Pressable
           style={styles.button}
           onPress={handleSave}
