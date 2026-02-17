@@ -3,29 +3,35 @@ import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { router } from 'expo-router';
 import { Pressable } from 'react-native';
+import { useAuth } from '@/context/AuthContext';
 
 export default function TabsLayout() {
+  const { user, loading } = useAuth();
+
+  if (loading) return null;
+  if (!user) return null;
 
   const handleLogout = () => {
     // Tähän myöhemmin kirjautuminen ulos
-    router.replace('/indexe'); // Menee kirjautumissivulle, tarviiko jotain erityistä?
+    router.replace('/'); // Menee kirjautumissivulle, tarviiko jotain erityistä?
   };
 
   return (
     <Tabs
-      screenOptions={{ headerShown: true,
-      headerRight: () => (
-        <Pressable
-        onPress={handleLogout}
-        style={{marginRight: 16}}
-        >
-          <Ionicons name="log-out-outline" size={32} color="red" />
-        </Pressable>
-      )
-       }}
+      screenOptions={{
+        headerShown: true,
+        headerRight: () => (
+          <Pressable
+            onPress={handleLogout}
+            style={{ marginRight: 16 }}
+          >
+            <Ionicons name="log-out-outline" size={32} color="red" />
+          </Pressable>
+        )
+      }}
     >
       <Tabs.Screen
-        name="index"
+        name="frontpage"
         options={{
           title: 'Etusivu',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,

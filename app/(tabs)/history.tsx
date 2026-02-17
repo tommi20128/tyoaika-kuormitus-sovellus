@@ -86,12 +86,12 @@ export default function HistoryPage() {
           </View>
 
           <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-          <View style={styles.card}>
-            <Text style={{ fontWeight: 'bold' }}>Työtunnit yhteensä: 152 h /165</Text>
-            <Text style={{ fontWeight: 'bold' }}>Keskimääräinen kuormitus: 6.2 / 10</Text>
-          </View>
+            <View style={styles.card}>
+              <Text style={{ fontWeight: 'bold' }}>Työtunnit yhteensä: 152 h /165</Text>
+              <Text style={{ fontWeight: 'bold' }}>Keskimääräinen kuormitus: 6.2 / 10</Text>
+            </View>
 
-          {/* Viikkokortit */}
+            {/* Viikkokortit */}
             <View style={styles.card}>
               <Text style={styles.date}>Viikko 1</Text>
               <Text>Työtunnit: 40 h</Text>
@@ -120,19 +120,19 @@ export default function HistoryPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#f2f2f2', 
-    padding: 20 
+  container: {
+    flex: 1,
+    backgroundColor: '#f2f2f2',
+    padding: 20
   },
-  title: { 
-    fontSize: 26, 
-    fontWeight: 'bold', 
-    marginBottom: 16 
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 16
   },
-  toggleContainer: { 
-    flexDirection: 'row', 
-    marginBottom: 16 
+  toggleContainer: {
+    flexDirection: 'row',
+    marginBottom: 16
   },
   toggleButton: {
     flex: 1,
@@ -142,12 +142,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginHorizontal: 4,
   },
-  activeToggle: { 
-    backgroundColor: '#007AFF' 
+  activeToggle: {
+    backgroundColor: '#007AFF'
   },
-  toggleText: { 
-    fontWeight: 'bold', 
-    color: '#000' 
+  toggleText: {
+    fontWeight: 'bold',
+    color: '#000'
   },
   weekNav: {
     flexDirection: 'row',
@@ -160,26 +160,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
     borderRadius: 6,
   },
-  navText: { 
-    fontSize: 18, 
-    fontWeight: 'bold' 
+  navText: {
+    fontSize: 18,
+    fontWeight: 'bold'
   },
-  weekLabel: { 
-    fontSize: 16, 
-    fontWeight: 'bold' 
+  weekLabel: {
+    fontSize: 16,
+    fontWeight: 'bold'
   },
-  card: { 
-    backgroundColor: '#fff', 
-    padding: 16, 
-    borderRadius: 10, 
-    marginBottom: 12 
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 10,
+    marginBottom: 12
   },
-  date: { 
-    fontWeight: 'bold', 
-    marginBottom: 4 
+  date: {
+    fontWeight: 'bold',
+    marginBottom: 4
   },
-  comment: { 
-    fontStyle: 'italic', 
-    marginTop: 4 
+  comment: {
+    fontStyle: 'italic',
+    marginTop: 4
   },
 });
