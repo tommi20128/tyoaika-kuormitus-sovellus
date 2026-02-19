@@ -1,3 +1,4 @@
+// components/InfoCard.tsx
 import { View, Text, StyleSheet, ViewStyle } from "react-native";
 import { ReactNode } from "react";
 
@@ -6,6 +7,8 @@ type InfoCardProps = {
   children: ReactNode;
   style?: ViewStyle;
 };
+
+// Tämä on yleinen korttikomponentti, jota käytetään TodayCardissa, SummaryCardissa ja WorkEntryCardissa. Se hoitaa korttien ulkoasun ja otsikon näyttämisen.
 
 export default function InfoCard({
   title,
