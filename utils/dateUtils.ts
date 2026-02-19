@@ -67,7 +67,6 @@ export const formatShortDate = (date: Date) =>
   date.toLocaleDateString('fi-FI', {
     day: 'numeric',
     month: 'numeric',
-    weekday: 'short',
   });
 
 // Pitkä päivämäärä (esim. 19.2.2026 Maanantai)

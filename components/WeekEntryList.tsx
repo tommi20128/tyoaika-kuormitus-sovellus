@@ -7,7 +7,8 @@ interface Props {
   entries: WorkEntry[];
 }
 
-// Tämä komponentti näyttää yhden viikon kaikki työpäivien kirjaukset listana
+// Tämä komponentti näyttää yhden viikon kaikki työpäivien kirjaukset listana. 
+// Käytetään historiasivulla viikkonäkymässä, jossa näytetään kaikki viikon kirjaukset peräkkäin.
 export default function WeekEntryList({ entries }: Props) {
   return (
     <ScrollView>
