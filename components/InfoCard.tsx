@@ -8,7 +8,8 @@ type InfoCardProps = {
   style?: ViewStyle;
 };
 
-// Tämä on yleinen korttikomponentti, jota käytetään TodayCardissa, SummaryCardissa ja WorkEntryCardissa. Se hoitaa korttien ulkoasun ja otsikon näyttämisen.
+// Tämä on yleinen korttikomponentti, jota käytetään TodayCardissa, SummaryCardissa ja WorkEntryCardissa. 
+// Se hoitaa korttien ulkoasun ja otsikon näyttämisen.
 
 export default function InfoCard({
   title,

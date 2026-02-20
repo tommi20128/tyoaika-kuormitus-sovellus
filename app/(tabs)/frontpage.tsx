@@ -2,11 +2,12 @@
 import { ScrollView, Text, StyleSheet } from 'react-native';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import SummaryCard from '@/components/SummaryCard';
-import InfoCard from '@/components/InfoCard';
-import InfoRow from '@/components/InfoRow';
 import WorkEntryCard from '@/components/WorkEntryCard';
+import { calculateCareerTargetMinutes } from '@/utils/workUtils';
 
 export default function HomePage() {
+
+  // Haetaan dashboardin data hookista
   const {
     firstName,        // Käyttäjän etunimi, joka näytetään tervetuloviestissä
     todayEntry,       // Tänään tehdyt kirjaukset
@@ -48,12 +49,11 @@ export default function HomePage() {
 
       {/* Kokonaiskuva kaikista työuran aikana tehdyistä tunneista*/}
       {totalSummary && (
-        <InfoCard title="Työtuntisaldo">
-          <InfoRow
-            label="Tehty yhteensä"
-            value={`${totalSummary.hours} h ${totalSummary.minutes} min`}
-          />
-        </InfoCard>
+        <SummaryCard
+          title="Työtuntisaldo"
+          summary={totalSummary}
+          targetHours={calculateCareerTargetMinutes([], TARGET_WEEK_HOURS / 5) / 60} // Oletetaan 5 työpäivää viikossa
+        />
       )}
     </ScrollView>
   );

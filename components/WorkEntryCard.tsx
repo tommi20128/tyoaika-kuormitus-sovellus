@@ -1,10 +1,10 @@
 //components/WorkEntryCard.tsx
+import { DailyWorkEntry } from '@/types/work';
+import { formatReverseFullDate } from '@/utils/dateUtils';
 import InfoCard from './InfoCard';
 import InfoRow from './InfoRow';
-import { WorkEntry } from '@/types/work';
-import { formatFullDate, formatReverseFullDate,  } from '@/utils/dateUtils';
 interface Props {
-  entry: WorkEntry;
+  entry: DailyWorkEntry;
   showStress?: boolean;
 }
 

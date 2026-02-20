@@ -1,14 +1,12 @@
 //components/WeekSummaryList.tsx
-import { WorkEntry } from "@/types/work";
-import { Pressable, ScrollView } from "react-native";
-import { StyleSheet } from "react-native";
-import { Text } from "react-native";
+import { DailyWorkEntry } from "@/types/work";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 
 // Tämä komponentti näyttää listan viikkoyhteenvedoista. Käytetään historiassa, jossa näytetään kaikki kuukauden kirjaukset viikoittain ryhmiteltynä.
 
 interface WeekSummaryListProps {
-  weeks: Record<number, WorkEntry[]>;
-  calculateWeekSummary: (arr: WorkEntry[]) => { hours: number; minutes: number; avgLoad: string };
+  weeks: Record<number, DailyWorkEntry[]>;
+  calculateWeekSummary: (arr: DailyWorkEntry[]) => { hours: number; minutes: number; avgLoad: string };
   onSelectWeek: (week: number) => void;
 }
 

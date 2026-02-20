@@ -1,10 +1,10 @@
 // components/WeekEntryList.tsx
+import { DailyWorkEntry } from '@/types/work';
 import { ScrollView } from 'react-native';
 import WorkEntryCard from './WorkEntryCard';
-import { WorkEntry } from '@/types/work';
 
 interface Props {
-  entries: WorkEntry[];
+  entries: DailyWorkEntry[];
 }
 
 // Tämä komponentti näyttää yhden viikon kaikki työpäivien kirjaukset listana. 

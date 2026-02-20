@@ -20,8 +20,8 @@ export default function PeriodNavigator({
 }: Props) {
   return (
     <View style={styles.container}>
-      <Pressable 
-        style={[styles.button, disablePrev && styles.disabled]} 
+      <Pressable
+        style={[styles.button, disablePrev && styles.disabled]}
         onPress={onPrev}
         disabled={disablePrev}
       >

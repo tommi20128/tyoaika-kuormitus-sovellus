@@ -1,9 +1,9 @@
 // types/work.ts
 
-// Sisältää tyypit työaikatiedoille, yhteenvetotiedoille ja työaikakirjauksen lomakedatalle.
+// Sisältää tyypit työaikatiedoille ja lomakedatalle
 
 // Työaikatiedot
-export interface WorkEntry {
+export interface DailyWorkEntry {
   date: string;
   totalMinutes: number;
   load1: number;
@@ -11,17 +11,6 @@ export interface WorkEntry {
   stressLoad2: number;
   averageStress: number;
   comment?: string;
-}
-
-// Päivä- ja viikkoyhteenveto
-export interface Summary {
-  hours: number;
-  minutes: number;
-  load?: string;
-  stress1?: string;
-  stress2?: string;
-  stress3?: string;
-  goalDiff: number;
 }
 
 // Lomakedata, jota käytetään add-work-sivulla

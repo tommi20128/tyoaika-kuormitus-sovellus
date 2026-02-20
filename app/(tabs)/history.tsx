@@ -1,16 +1,15 @@
 // app/(tabs)/history.tsx
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { useHistoryData } from '@/hooks/useHistoryData';
-import WorkEntryCard from '@/components/WorkEntryCard';
-import { formatShortDate, formatMonthLabel } from '../../utils/dateUtils';
 import PeriodNavigator from '@/components/PeriodNavigator';
 import ViewToggleButton from '@/components/ViewToggleButton';
 import WeekSummaryList from '@/components/WeekSummaryList';
 import WeekEntryList from '@/components/WeekEntryList';
+import { formatWeekLabel } from '@/utils/dateUtils';
+import EmptyCard from '@/components/EmptyCard';
 
+// Historia-sivu näyttää viikko- ja kuukausinäkymän
 export default function HistoryPage() {
-  const [view, setView] = useState<'week' | 'month'>('week');
 
   // Haetaan historia-data hookista
   const {
@@ -23,24 +22,72 @@ export default function HistoryPage() {
     weekYear,             // nykyisen viikon vuosi
     monday,               // nykyisen viikon maanantai
     sunday,               // nykyisen viikon sunnuntai
+    view,                 // nykyinen näkymä ('week' tai 'month')
+    setView,              // funktio näkymän vaihtamiseen
+    monthLabel,           // nykyisen kuukauden label (esim. "Lokakuu 2024")
     isFutureWeek,         // onko kyseinen viikko tulevaisuudessa
     targetMonthDate,      // kuukausinäkymän vertailupvm (kuukauden ensimmäinen päivä)
     isFutureMonth,        // onko kyseinen kuukausi tulevaisuudessa
-    groupByWeek,          // funktio joka ryhmittelee kuukauden kirjaukset viikoittain
+    groupByWeek,         // kuukauden kirjausten ryhmittely viikoittain
     calculateWeekSummary, // funktio joka laskee viikon yhteenvetotiedot
   } = useHistoryData();
 
-  // Muodostetaan kuukausilabel käytettäväksi kuukausinäkymässä
-  const monthName = formatMonthLabel(targetMonthDate);
+  const weeks = groupByWeek(); // Kuukausinäkymän data
 
-  // Ryhmitellään kuukauden kirjaukset viikoittain
-  const weeks = groupByWeek();
+  // -------------------------
+  // Sisäiset komponentit JSX:n selkeyttämiseen
+  // -------------------------
 
-  // Muodostetaan viikon label, esim. "Viikko 42 (2024) 14.10. – 20.10."
-  const getWeekLabel = () => 
-    `Viikko ${weekNumber} (${weekYear}) ${formatShortDate(monday)} – ${formatShortDate(sunday)}`;
+  // Viikkonäkymä
+  const WeekView = () => (
+    <>
+      {/* Viikkonavigointi */}
+      <PeriodNavigator
+        label={formatWeekLabel(weekNumber, weekYear, monday, sunday)}
+        onPrev={() => setWeekOffset(weekOffset - 1)}
+        onNext={() => setWeekOffset(weekOffset + 1)}
+        disableNext={isFutureWeek(monday)}
+      />
 
+      {/* Viikkolista */}
+      {weekEntries.length > 0 ? (
+        <WeekEntryList entries={weekEntries} />
+      ) : (
+        <EmptyCard message="Ei merkintöjä tällä viikolla" />
+      )}
+    </>
+  );
 
+  // Kuukausinäkymä
+  const MonthView = () => (
+    <>
+      {/* Kuukausinavigointi */}
+      <PeriodNavigator
+        label={monthLabel}
+        onPrev={() => setMonthOffset(monthOffset - 1)}
+        onNext={() => setMonthOffset(monthOffset + 1)}
+        disableNext={isFutureMonth(targetMonthDate)}
+      />
+
+      {/* Viikkoyhteenvetolista */}
+      {Object.keys(weeks).length > 0 ? (
+        <WeekSummaryList
+          weeks={weeks}
+          calculateWeekSummary={calculateWeekSummary}
+          onSelectWeek={(week) => {
+            setView('week');
+            setWeekOffset(week - weekNumber);
+          }}
+        />
+      ) : (
+        <EmptyCard message="Ei merkintöjä tältä kuukaudelta" />
+      )}
+    </>
+  );
+
+  // -------------------------
+  // Render
+  // -------------------------
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Historia</Text>
@@ -48,47 +95,14 @@ export default function HistoryPage() {
       {/* ToggleButton viikko/kuukausi */}
       <ViewToggleButton
         value={view}
-        onChange={(val) => setView(val)}
+        onChange={setView}
       />
 
-      {view === 'week' ? (
-        <>
-          {/* Viikkonavigointi */}
-          <PeriodNavigator
-            label={getWeekLabel()}
-            onPrev={() => setWeekOffset(weekOffset - 1)}
-            onNext={() => setWeekOffset(weekOffset + 1)}
-            disableNext={isFutureWeek(monday)}
-          />
-
-          {/* Viikkolista */}
-          <WeekEntryList entries={weekEntries} />
-        </>
-      ) : (
-        <>
-          {/* Kuukausinavigointi */}
-          <PeriodNavigator
-            label={monthName}
-            onPrev={() => setMonthOffset(monthOffset - 1)}
-            onNext={() => setMonthOffset(monthOffset + 1)}
-            disableNext={isFutureMonth(targetMonthDate)}
-          />
-
-          {/* Viikkoyhteenvetolista */}
-          <WeekSummaryList
-            weeks={weeks}
-            calculateWeekSummary={calculateWeekSummary}
-            onSelectWeek={(week) => {
-              setView('week');
-              setWeekOffset(week - weekNumber);
-            }}
-          />
-        </>
-      )}
+      {/* Näytetään valittu näkymä */}
+      {view === 'week' ? <WeekView /> : <MonthView />}
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -100,5 +114,12 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 16
+  },
+  emptyCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    padding: 20,
+    alignItems: 'center',
+    marginTop: 10,
   },
 });

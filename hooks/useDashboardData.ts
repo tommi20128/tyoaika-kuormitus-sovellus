@@ -1,10 +1,12 @@
 // hooks/useDashboardData.ts
-import { useState, useEffect } from 'react';
-import { doc, getDoc, collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/Config';
 import { useAuth } from '@/context/AuthContext';
-import { WorkEntry, Summary } from '@/types/work';
-import { sumMinutes, average } from '@/utils/workUtils';
+import { WorkSummary } from '@/types/summary';
+import { DailyWorkEntry } from '@/types/work';
+import { average, sumMinutes, formatHourDiff } from '@/utils/workUtils';
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import { calculateCareerTargetMinutes } from '@/utils/workUtils';
 
 const DAILY_TARGET = 7.5; // tuntia / arkipäivä (vaihdetaan myöhemmin oikeaan laskutapaan)
 
@@ -14,10 +16,10 @@ export function useDashboardData() {
   const { user } = useAuth();
 
   const [firstName, setFirstName] = useState('');
-  const [todayEntry, setTodayEntry] = useState<WorkEntry | null>(null);
-  const [weekSummary, setWeekSummary] = useState<Summary | null>(null);
-  const [monthSummary, setMonthSummary] = useState<Summary | null>(null);
-  const [totalSummary, setTotalSummary] = useState<Summary | null>(null);
+  const [todayEntry, setTodayEntry] = useState<DailyWorkEntry | null>(null);
+  const [weekSummary, setWeekSummary] = useState<WorkSummary | null>(null);
+  const [monthSummary, setMonthSummary] = useState<WorkSummary | null>(null);
+  const [totalSummary, setTotalSummary] = useState<WorkSummary | null>(null);
 
   const todayId = new Date().toISOString().split('T')[0];
 
@@ -31,7 +33,7 @@ export function useDashboardData() {
         const data = docSnap.data();
         setFirstName(data.firstName || '');
       }
-    };    
+    };
     fetchName();
   }, [user]);
 
@@ -48,19 +50,23 @@ export function useDashboardData() {
 
     // onSnapshot kuuntelee Firestore-muutoksia reaaliaikaisesti
     const unsubscribe = onSnapshot(entriesRef, snapshot => {
-      const entries: WorkEntry[] = snapshot.docs.map(doc =>
-        doc.data() as WorkEntry
+      const entries: DailyWorkEntry[] = snapshot.docs.map(doc =>
+        doc.data() as DailyWorkEntry
       );
 
       // Nykyinen päivä
       const now = new Date();
 
+      // -------------------------
       // Päivän kirjaus
+      // -------------------------
       const todayData =
         entries.find(e => e.date === todayId) || null;
       setTodayEntry(todayData);
 
-      // Viikon alku (maanantai)
+      // -------------------------
+      // Viikkonäkymä
+      // -------------------------
       const weekStart = new Date(now);
       const day = weekStart.getDay();
       const diff = (day === 0 ? -6 : 1) - day;
@@ -86,7 +92,9 @@ export function useDashboardData() {
         goalDiff: weekMinutes / 60 - weekEntries.length * DAILY_TARGET,
       });
 
-      // Kuukausi
+      // -------------------------
+      // Kuukausinäkymä
+      // -------------------------
       const monthStart = new Date(
         now.getFullYear(),
         now.getMonth(),
@@ -113,14 +121,22 @@ export function useDashboardData() {
         goalDiff: monthMinutes / 60 - monthEntries.length * DAILY_TARGET,
       });
 
-      // Koko saldo
+      // -------------------------
+      // Koko työuran yhteenvedot
+      // -------------------------
       const totalMinutes = sumMinutes(entries);
 
-      // Koko saldon yhteenveto
+      // Lasketaan tavoiteminuutit ensimmäisestä kirjauksesta lähtien
+      const careerTargetMinutes = calculateCareerTargetMinutes(entries, DAILY_TARGET);
+
+      // Erotus tunneissa (desimaalina)
+      const careerDiffHours = (totalMinutes - careerTargetMinutes) / 60;
+
       setTotalSummary({
         hours: Math.floor(totalMinutes / 60),
         minutes: totalMinutes % 60,
-        goalDiff: totalMinutes / 60,
+        goalDiff: careerDiffHours,
+        targetMinutes: careerTargetMinutes,
       });
     });
 

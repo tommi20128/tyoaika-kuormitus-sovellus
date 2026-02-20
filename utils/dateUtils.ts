@@ -1,8 +1,9 @@
 // utils/dateUtils.ts
 
 // Apufunktioita päivämäärien käsittelyyn
+// Näitä käytetään mm. historia- ja etusivun näkymissä viikko- ja kuukausidatan laskemiseen ja muotoiluun
 
-// ISO viikon numero
+// Palauttaa ISO-viikon numeron annetulle päivämäärälle.
 export const getISOWeekNumber = (date: Date): number => {
   const temp = new Date(date.getTime());
   temp.setHours(0, 0, 0, 0);
@@ -15,12 +16,12 @@ export const getISOWeekNumber = (date: Date): number => {
       ((temp.getTime() - week1.getTime()) / 86400000 -
         3 +
         ((week1.getDay() + 6) % 7)) /
-        7
+      7
     )
   );
 };
 
-// ISO viikon alku ja loppu (maanantai ja sunnuntai)
+// Laskee annetun päivämäärän viikon aloitus- (maanantai) ja lopetuspäivän (sunnuntai).
 export const getWeekRange = (date: Date) => {
   const day = date.getDay();
   const diffToMonday = day === 0 ? -6 : 1 - day;
@@ -34,7 +35,7 @@ export const getWeekRange = (date: Date) => {
   return { monday, sunday };
 };
 
-// Onko viikko tulevaisuudessa
+// Tarkistaa, onko annettu viikko tulevaisuudessa suhteessa tämän viikon maanantaihin.
 export const isFutureWeek = (date: Date) => {
   const now = new Date();
   const thisWeekMonday = getWeekRange(now).monday;
@@ -43,31 +44,29 @@ export const isFutureWeek = (date: Date) => {
   return targetMonday > thisWeekMonday;
 };
 
-// Onko kuukausi tulevaisuudessa
+// Tarkistaa, onko annettu kuukausi tulevaisuudessa suhteessa nykyiseen kuukauteen.
 export const isFutureMonth = (date: Date) => {
   const now = new Date();
-
-  const thisMonth = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    1
-  );
-
-  const targetMonth = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    1
-  );
+  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const targetMonth = new Date(date.getFullYear(), date.getMonth(), 1);
 
   return targetMonth > thisMonth;
 };
 
-// Lyhyt päivämäärä
+// Lyhyt päivämäärä esim. 14.10.
 export const formatShortDate = (date: Date) =>
   date.toLocaleDateString('fi-FI', {
     day: 'numeric',
     month: 'numeric',
   });
+
+// Muodostaa viikon labelin esim. "Viikko 42 (2024) 14.10. – 20.10."
+export const formatWeekLabel = (
+  weekNumber: number,
+  year: number,
+  monday: Date,
+  sunday: Date
+) => `Viikko ${weekNumber} (${year}) ${formatShortDate(monday)} – ${formatShortDate(sunday)}`;
 
 // Pitkä päivämäärä (esim. 19.2.2026 Maanantai)
 export const formatFullDate = (date: Date) => {
@@ -76,38 +75,27 @@ export const formatFullDate = (date: Date) => {
     month: 'numeric',
     year: 'numeric',
   });
-
-  const weekday = date.toLocaleDateString('fi-FI', {
-    weekday: 'long',
-  });
-
-  // Muutetaan ensimmäinen kirjain isoksi
-  const capitalizedWeekday =
-    weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const weekday = date.toLocaleDateString('fi-FI', { weekday: 'long' });
+  const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
 
   return `${datePart} ${capitalizedWeekday}`;
 };
 
-   // pitkä päivämäärä viikonpäivä ensin (esim. Maanantai 19.2.2026)
+// pitkä päivämäärä viikonpäivä ensin (esim. Maanantai 19.2.2026)
 export const formatReverseFullDate = (date: Date) => {
   const datePart = date.toLocaleDateString('fi-FI', {
     day: 'numeric',
     month: 'numeric',
     year: 'numeric',
   });
-
-  const weekday = date.toLocaleDateString('fi-FI', {
-    weekday: 'long',
-  });
-
-  // Muutetaan ensimmäinen kirjain isoksi
-  const capitalizedWeekday =
-    weekday.charAt(0).toUpperCase() + weekday.slice(1);
+  const weekday = date.toLocaleDateString('fi-FI', { weekday: 'long' });
+  const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
 
   return `${capitalizedWeekday} ${datePart}`;
 };
 
-// Kuukauden nimi ja vuosi
+// Kuukauden nimi ja vuosi esim. "Lokakuu 2024"
+// Käytetään historia-sivun kuukausinäkymien labelinä
 export const formatMonthLabel = (date: Date) =>
   date.toLocaleDateString('fi-FI', {
     month: 'long',

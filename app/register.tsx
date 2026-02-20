@@ -1,3 +1,4 @@
+// app/register.tsx
 import { useState } from "react";
 import { View, Text, TextInput, Button, Alert } from "react-native";
 import { db, doc, setDoc, serverTimestamp } from "../Config";

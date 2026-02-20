@@ -58,7 +58,7 @@ export default function AddWorkPage() {
   }, [user]);
 
   // Parsitaan numerokentät ja tekstiedot oikeisiin muotoihin tallennusta varten
-  const parseInputs = () => {
+  const parseFormData = () => {
     return {
       hours: parseInt(formData.hours),
       minutes: parseInt(formData.minutes),
@@ -70,7 +70,7 @@ export default function AddWorkPage() {
   };
 
   // Tarkistetaan syötteiden oikeellisuus
-  const validateInputs = (data: ReturnType<typeof parseInputs>): string | null => {
+  const validateFormData = (data: ReturnType<typeof parseFormData>): string | null => {
     if (
       isNaN(data.hours) ||
       isNaN(data.minutes) ||
@@ -78,7 +78,7 @@ export default function AddWorkPage() {
       isNaN(data.stressLoad1) ||
       isNaN(data.stressLoad2)
     ) return 'Täytä kaikki numerokentät oikein.';
-    
+
     if (data.minutes < 0 || data.minutes > 59) return 'Minuuttien pitää olla välillä 0–59.';
     if (data.load1 < 1 || data.load1 > 10) return 'Kuormitus pitää olla välillä 1–10.';
     if (data.stressLoad1 < 1 || data.stressLoad1 > 10 || data.stressLoad2 < 1 || data.stressLoad2 > 10)
@@ -88,7 +88,7 @@ export default function AddWorkPage() {
   };
 
   // Tallennetaan Firestoreen
-  const saveToFirestore = async (data: ReturnType<typeof parseInputs>) => {
+  const saveToFirestore = async (data: ReturnType<typeof parseFormData>) => {
     const totalMinutes = data.hours * 60 + data.minutes;
     const averageStress = (data.stressLoad1 + data.stressLoad2) / 2;
 
@@ -111,8 +111,8 @@ export default function AddWorkPage() {
     if (!user) return;
 
     try {
-      const parsed = parseInputs();
-      const validationError = validateInputs(parsed);
+      const parsed = parseFormData();
+      const validationError = validateFormData(parsed);
       if (validationError) return Alert.alert('Virhe', validationError);
 
       await saveToFirestore(parsed);
@@ -129,10 +129,10 @@ export default function AddWorkPage() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // IOS: siirtää ylös, Android: scrollaa
       keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} // säädä tarpeen mukaan
     >
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={{ padding: 20, paddingBottom: 150 }}
         keyboardShouldPersistTaps="handled"
-        > 
+      >
         <Text style={styles.title}>Lisää työaika</Text>
 
         {/* Työaika tunnit ja minuutit */}
