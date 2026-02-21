@@ -1,3 +1,4 @@
+// app/index.tsx
 import CustomButton from "@/components/CustomButton";
 import { Alert, View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';

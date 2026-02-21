@@ -1,0 +1,36 @@
+// app/components/EmptyCard.tsx
+import { View, Text, StyleSheet } from 'react-native';
+
+// Yksinkertainen kortti, jota voidaan käyttää "Ei merkintöjä" -tms. 
+// näyttämiseen esimerkiksi historia-sivulla, 
+// kun tiettynä viikkona tai kuukautena ei ole kirjauksia.
+
+interface EmptyCardProps {
+  message?: string; // Viesti, joka näytetään kortissa
+}
+
+// Yksinkertainen kortti, jota voidaan käyttää "Ei merkintöjä" -tms. näyttämiseen
+export default function EmptyCard({ message = 'Ei merkintöjä' }: EmptyCardProps) {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>{message}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    marginVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  text: {
+    fontSize: 16,
+    color: '#555',
+  },
+});

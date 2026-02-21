@@ -1,3 +1,4 @@
+// context/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 
@@ -8,11 +9,13 @@ interface AuthContextType {
   loading: boolean;
 }
 
+// Alustetaan konteksti oletusarvoilla
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
 });
 
+// AuthProvider-komponentti hoitaa autentikoinnin tilan ja tarjoaa sen lapsikomponenteille
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
