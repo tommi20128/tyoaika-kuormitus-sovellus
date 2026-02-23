@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#FFFFFF",
   },
   title: {
     fontSize: 26,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f3ebeb",
     padding: 12,
     borderRadius: 8,
     marginBottom: 10,
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "#f4efef",
     padding: 14,
     borderRadius: 10,
     marginBottom: 12,

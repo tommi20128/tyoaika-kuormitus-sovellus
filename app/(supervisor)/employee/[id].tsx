@@ -81,7 +81,7 @@ export default function EmployeeDetail() {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: "#FFFFFF",
   },
   name: {
     fontSize: 22,

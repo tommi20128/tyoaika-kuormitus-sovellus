@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     paddingBottom: 40,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#FFFFFF',
   },
   title: {
     fontSize: 26,

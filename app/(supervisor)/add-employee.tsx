@@ -1,83 +1,126 @@
-import { View, Text, TextInput, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { useState } from "react";
+import { View, Text, TextInput, Button, Alert } from "react-native";
+import { db, doc, setDoc, serverTimestamp } from "../../Config";
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from "expo-router";
+import { StyleSheet } from "react-native";
 
-export default function AddEmployeePage() {
-  const handleAddEmployee = () => {
-    alert("Tämä on demo, eikä oikeasti lisää työntekijää.");
+export default function Register() {
+  const [title, setTitle] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState(""); ""
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  const router = useRouter();
+
+  const handleBackToLogin = () => {
+    router.replace("/");
+  }
+  const handleRegister = async () => {
+    if (!email || !password || !title || !firstName || !lastName) {
+      Alert.alert("Virhe", "Täytä kaikki kentät");
+      return;
+    }
+    try {
+      const auth = getAuth();
+
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const uid = userCredential.user.uid;
+
+      await setDoc(doc(db, "users", uid), {
+        uid,
+        firstName,
+        lastName,
+        email,
+        password,
+        title,
+        createdAt: serverTimestamp(),
+      });
+      Alert.alert(
+        "",
+        "Käyttäjä luotu",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              router.replace("/");
+            },
+          },
+        ]
+      );
+
+    } catch (error: any) {
+      console.error(error);
+      Alert.alert("Virhe", error.message || "Käyttäjän luonti epäonnistui");
+    }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Lisää uusi työntekijä</Text>
-
-      <Text style={styles.label}>Nimi</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Rekisteröinti</Text>
       <TextInput
         style={styles.input}
-        placeholder="Esim. Matti Meikäläinen"
-      />
-
-      <Text style={styles.label}>Rooli</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Esim. Asentaja"
-      />
-
-      <Text style={styles.label}>Sähköposti</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="sahkoposti@esimerkki.fi"
-        keyboardType="email-address"
+        placeholder="Etunimi"
+        value={firstName}
+        onChangeText={setFirstName}
         autoCapitalize="none"
       />
-
-      <Text style={styles.label}>Salasana</Text>
       <TextInput
         style={styles.input}
-        placeholder="Kirjoita salasana"
+        placeholder="Sukunimi"
+        value={lastName}
+        onChangeText={setLastName}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Sähköposti"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Salasana"
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry
       />
-
-      <Pressable style={styles.button} onPress={handleAddEmployee}>
-        <Text style={styles.buttonText}>Lisää työntekijä</Text>
-      </Pressable>
-    </ScrollView>
+      <TextInput
+        style={styles.input}
+        placeholder="Titteli"
+        value={title}
+        onChangeText={setTitle}
+      />
+      <Button title="Luo käyttäjä" onPress={handleRegister} />
+      <Button title="Takaisin kirjautumiseen" onPress={handleBackToLogin} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
     padding: 20,
-    backgroundColor: '#f2f2f2',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 24,
+    marginBottom: 40,
     textAlign: 'center',
   },
-  label: {
-    fontSize: 16,
-    marginBottom: 6,
-    fontWeight: '500',
-  },
   input: {
-    backgroundColor: '#ffffff',
+    width: '100%',
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    marginBottom: 16,
-  },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    backgroundColor: 'white',
   },
 });
