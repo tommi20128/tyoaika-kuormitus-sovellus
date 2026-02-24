@@ -1,43 +1,70 @@
 // app/index.tsx
 import CustomButton from "@/components/CustomButton";
-import { Alert, View, Text, StyleSheet, Pressable, TextInput } from "react-native";
+import { Image } from "react-native";
+import { Alert, View, StyleSheet, TextInput } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { db, doc,  } from "../Config";
 import { router } from "expo-router";
 import { useState } from "react";
+import { getDoc } from "firebase/firestore";
 
 export default function IndexPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const auth = getAuth();
 
-  const handleLogin = () => {
+
+  <Image
+  source={require("../assets/images/sovellus1.png")}
+  style={{ width: 150, height: 150 }}
+/>
+
+  const handleLogin = async () => {
     if (email === '' || password === '') {
       Alert.alert("Tarkista kentät");
       return;
     }
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        console.log("Kirjautuminen onnistui");
-        router.replace('/(tabs)/frontpage');
-      })
-      .catch((error) => {
-        console.log(error);
-        Alert.alert("Väärä sähköposti tai salasana");
-      });
+try {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const uid =userCredential.user.uid
+
+  console.log("kirjaudutaan", {email})
+
+  const docSnap = await getDoc(doc(db, "users", uid));
+
+  if (docSnap.exists()) {
+    const userData = docSnap.data();
+    const title = userData.title;
+    console.log({title})
+
+    if (title === "Esihenkilö") {
+      router.replace("/(supervisor)/mainpage");
+      
+    } else {
+      router.replace("/(tabs)/frontpage");
+    }
+   }else{
+    Alert.alert("Virhe", "Käyttäjätietoja ei löytynyt");
+   }
+}catch (error){
+    console.log(error);
+    Alert.alert("Väärä sähköposti tai salasana");
+  }
   };
 
-  const handleRegister = () => {
-    router.push('/register');
-  };
+
 
   // Esihenkilöllä ei ole vielä yhteyttä Firebaseen, joten ohjataan suoraan esihenkilönäkymään
-  const handleSupervisorLogin = () => {
+ /* const handleSupervisorLogin = () => {
     router.replace('/(supervisor)/mainpage');
-  }
+  }*/
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tervetuloa sovellukseemme!</Text>
+        <Image
+  source={require("../assets/images/sovellus1.png")}
+  style={{ width: 200, height: 200, marginBottom: 50 }}
+/>
       <TextInput
         style={styles.input}
         placeholder="Sähköposti"
@@ -54,8 +81,6 @@ export default function IndexPage() {
         secureTextEntry
       />
       <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
-      <CustomButton title="Rekisteröidy" onPress={handleRegister} />
-      <CustomButton title="Kirjaudu esihenkilönä" onPress={handleSupervisorLogin} />
     </View>
   );
 }
@@ -65,7 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f2f2f2',
+    backgroundColor: '#FFFFFF',
     padding: 20,
   },
   title: {
