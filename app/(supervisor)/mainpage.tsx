@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { mockEmployees } from "../../data/mockEmployees";
 
@@ -8,6 +8,7 @@ export default function SupervisorHome() {
   const employees = mockEmployees;
 
   return (
+    
     <View style={styles.container}>
       <Text style={styles.title}>Työntekijät</Text>
 

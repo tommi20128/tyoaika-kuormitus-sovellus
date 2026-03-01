@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput, Button, Alert, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import { db, doc, setDoc, serverTimestamp } from "../../Config";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from "expo-router";
@@ -11,14 +11,15 @@ export default function Register() {
   const [email, setEmail] = useState(""); ""
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [manager, setManager] = useState("");
 
   const router = useRouter();
 
   const handleBackToLogin = () => {
-    router.replace("/");
+    router.replace("/(supervisor)/mainpage");
   }
   const handleRegister = async () => {
-    if (!email || !password || !title || !firstName || !lastName) {
+    if (!email || !password || !title || !firstName || !lastName || !manager) {
       Alert.alert("Virhe", "Täytä kaikki kentät");
       return;
     }
@@ -35,6 +36,7 @@ export default function Register() {
         email,
         password,
         title,
+        manager,
         createdAt: serverTimestamp(),
       });
       Alert.alert(
@@ -44,7 +46,7 @@ export default function Register() {
           {
             text: "OK",
             onPress: () => {
-              router.replace("/");
+              router.replace("/(supervisor)/mainpage");
             },
           },
         ]
@@ -57,6 +59,9 @@ export default function Register() {
   };
 
   return (
+    <KeyboardAvoidingView
+     >
+    <ScrollView >
     <View style={styles.container}>
       <Text style={styles.title}>Rekisteröinti</Text>
       <TextInput
@@ -64,14 +69,14 @@ export default function Register() {
         placeholder="Etunimi"
         value={firstName}
         onChangeText={setFirstName}
-        autoCapitalize="none"
+        
       />
       <TextInput
         style={styles.input}
         placeholder="Sukunimi"
         value={lastName}
         onChangeText={setLastName}
-        autoCapitalize="none"
+        
       />
       <TextInput
         style={styles.input}
@@ -93,9 +98,17 @@ export default function Register() {
         value={title}
         onChangeText={setTitle}
       />
+            <TextInput
+        style={styles.input}
+        placeholder="Esihenkilö"
+        value={manager}
+        onChangeText={setManager}
+      />
       <Button title="Luo käyttäjä" onPress={handleRegister} />
-      <Button title="Takaisin kirjautumiseen" onPress={handleBackToLogin} />
+      <Button title="Peruuta" onPress={handleBackToLogin} />
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -1,6 +1,6 @@
 // app/index.tsx
 import CustomButton from "@/components/CustomButton";
-import { Image } from "react-native";
+import { Image, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { Alert, View, StyleSheet, TextInput } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { db, doc,  } from "../Config";
@@ -60,8 +60,16 @@ try {
   }*/
 
   return (
+
+    <KeyboardAvoidingView
+     style={{ flex: 1 }}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // IOS: siirtää ylös, Android: scrollaa
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}>
+    <ScrollView
+    contentContainerStyle={{ flexGrow: 1 }}
+      keyboardShouldPersistTaps="handled">
     <View style={styles.container}>
-        <Image
+     <Image
   source={require("../assets/images/sovellus1.png")}
   style={{ width: 200, height: 200, marginBottom: 50 }}
 />
@@ -82,31 +90,32 @@ try {
       />
       <CustomButton title="Kirjaudu sisään" onPress={handleLogin} />
     </View>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
     padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  image: {
+    width: "80%",
+    height: 200,
     marginBottom: 40,
-    textAlign: 'center',
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 50,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
 });

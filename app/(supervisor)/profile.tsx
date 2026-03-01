@@ -28,6 +28,7 @@ export default function ProfilePage() {
           lastName={profile.lastName}
           email={profile.email}
           title={profile.title}
+          manager= {profile.manager}
         />
   
         {/* Salasanan vaihto */}

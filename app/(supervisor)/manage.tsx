@@ -1,15 +1,19 @@
 import { View, Text, StyleSheet, TextInput, Pressable, FlatList } from "react-native";
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { router } from "expo-router";
+import { EmployeeData } from '@/types/employees';
+import { useEmployeeData } from "@/hooks/useEmployeeData";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ManageEmployees() {
-  const [employees, setEmployees] = useState([
-    { id: "1", name: "Maija Meikäläinen" },
-    { id: "2", name: "Matti Virtanen" },
-    { id: "3", name: "Laura Laine" },
-  ]);
+     const { user, loading: authLoading } = useAuth();
 
-  const [newEmployeeName, setNewEmployeeName] = useState("");
+      if (!user) return null;
+   const { employees, loading } = useEmployeeData ();
+   console.log({employees})
+  
+
+ const [newEmployeeName, setNewEmployeeName] = useState("");
 
   // ➕ Lisää työntekijä
   const addEmployee = () => {
@@ -54,7 +58,7 @@ export default function ManageEmployees() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.employeeRow}>
-            <Text style={styles.name}>{item.name}</Text>
+            <Text>{item.firstName} {item.lastName}</Text>
             <Pressable
               style={styles.deleteButton}
               onPress={() => removeEmployee(item.id)}
