@@ -1,22 +1,16 @@
-// components/UserInfoCard.tsx
+import { EmployeeData } from '@/types/employees';
 import { View, Text, StyleSheet, Image } from 'react-native';
-import { ProfileData } from '@/types/profile';
+
 
 // Komponentti käyttäjätietojen näyttämiseen profiilisivulla
 
 export const UserInfoCard = ({
   firstName,
   lastName,
-  email,
   title,
-  manager,
-}: ProfileData) => {
+}: EmployeeData) => {
   return (
     <View style={styles.card}>
-      <Image
-        source={{ uri: 'https://via.placeholder.com/100' }}
-        style={styles.avatar}
-      />
 
       <Text style={styles.name}>
         {firstName} {lastName}
@@ -26,13 +20,6 @@ export const UserInfoCard = ({
         {title}
       </Text>
 
-      <Text style={styles.email}>
-        {email}
-      </Text>
-
-      <Text style={styles.manager}>
-        {manager}
-      </Text>
     </View>
   );
 };

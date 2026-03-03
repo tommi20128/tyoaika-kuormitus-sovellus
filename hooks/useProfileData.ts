@@ -15,6 +15,7 @@ export const useProfileData = () => {
     lastName: '',
     email: '',
     title: '',
+    manager:'',
   });
 
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,7 @@ export const useProfileData = () => {
           lastName: data.lastName || '',
           title: data.title || '',
           email: user.email || '',
+          manager: data.manager || '',
         });
       }
 
