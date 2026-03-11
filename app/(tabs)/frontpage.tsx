@@ -1,11 +1,13 @@
 // app/(tabs)/frontpage.tsx
 import { ScrollView, Text, StyleSheet } from 'react-native';
 import { useDashboardData } from '@/hooks/useDashboardData';
+import { useLocalSearchParams } from 'expo-router';
 import SummaryCard from '@/components/SummaryCard';
 import WorkEntryCard from '@/components/WorkEntryCard';
 import { calculateCareerTargetMinutes } from '@/utils/workUtils';
 
 export default function HomePage() {
+  const { id: employeeId } = useLocalSearchParams<{ id: string }>();
 
   // Haetaan dashboardin data hookista
   const {
@@ -14,7 +16,7 @@ export default function HomePage() {
     weekSummary,      // Yhteenveto kuluvan viikon tunneista (tehdyt, tavoitteet, erotus)
     monthSummary,     // Yhteenveto kuluvan kuukauden tunneista (tehdyt, tavoitteet, erotus)
     totalSummary,     // Yhteenveto koko työuran tunneista (tehdyt, tavoitteet, erotus)
-  } = useDashboardData();
+  } = useDashboardData(employeeId);
 
   //Nämä arvot vaihdetaan oikeiksi, kun laskukaavat on tehty
   const TARGET_WEEK_HOURS = 37.5;
