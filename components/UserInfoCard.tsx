@@ -21,7 +21,7 @@ export const UserInfoCard = ({
       <Text style={styles.name}>
         {firstName} {lastName}
       </Text>
-
+      
       <Text style={styles.title}>
         {title}
       </Text>
@@ -31,7 +31,7 @@ export const UserInfoCard = ({
       </Text>
 
       <Text style={styles.manager}>
-        {manager}
+        {`Esihenkilö: ${manager}`}
       </Text>
     </View>
   );

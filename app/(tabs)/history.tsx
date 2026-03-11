@@ -1,6 +1,7 @@
 // app/(tabs)/history.tsx
 import { View, Text, StyleSheet } from 'react-native';
 import { useHistoryData } from '@/hooks/useHistoryData';
+import { useLocalSearchParams } from 'expo-router';
 import PeriodNavigator from '@/components/PeriodNavigator';
 import ViewToggleButton from '@/components/ViewToggleButton';
 import WeekSummaryList from '@/components/WeekSummaryList';
@@ -10,6 +11,7 @@ import EmptyCard from '@/components/EmptyCard';
 
 // Historia-sivu näyttää viikko- ja kuukausinäkymän
 export default function HistoryPage() {
+  const { id: employeeId } = useLocalSearchParams<{ id: string }>();
 
   // Haetaan historia-data hookista
   const {
@@ -30,7 +32,7 @@ export default function HistoryPage() {
     isFutureMonth,        // onko kyseinen kuukausi tulevaisuudessa
     groupByWeek,         // kuukauden kirjausten ryhmittely viikoittain
     calculateWeekSummary, // funktio joka laskee viikon yhteenvetotiedot
-  } = useHistoryData();
+  } = useHistoryData(employeeId);
 
   const weeks = groupByWeek(); // Kuukausinäkymän data
 

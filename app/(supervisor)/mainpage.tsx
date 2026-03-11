@@ -1,32 +1,82 @@
-import { View, Text, StyleSheet, FlatList, Pressable, ScrollView } from "react-native";
+// app/(supervisor)/mainpage.tsx
+import { View, Text, StyleSheet, FlatList, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { mockEmployees } from "../../data/mockEmployees";
-
+import { useEffect, useState } from "react";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../../Config";
 
 export default function SupervisorHome() {
   const router = useRouter();
-  const employees = mockEmployees;
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+
+    // Firestore query: hae kaikki työntekijät
+    const q = query(
+      collection(db, "users"),
+      where("role", "==", "employee")
+    );
+
+    // onSnapshot kuuntelee reaaliaikaisia muutoksia
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+
+      // Muunnetaan snapshot suoraan arrayksi
+      const employeeList: any[] = [];
+
+      snapshot.forEach((doc) => {
+        employeeList.push({
+          id: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      setEmployees(employeeList);
+      setLoading(false);
+
+    });
+
+    return () => unsubscribe();
+
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
-    
     <View style={styles.container}>
+
       <Text style={styles.title}>Työntekijät</Text>
 
       <FlatList
         data={employees}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
+
           <Pressable
             style={styles.card}
-            onPress={() =>
-              router.push(`/employee/${item.id}`)
-            }
+            // Pitäisi navigoida työntekijän kirjauksiin mutta menee vääriin tietoihin.
+            onPress={() => router.push(`/(supervisor)/employee/${item.id}`)}
           >
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.role}>{item.role}</Text>
+
+            <Text style={styles.name}>
+              {item.firstName} {item.lastName}
+            </Text>
+
+            <Text style={styles.role}>
+              {item.title}
+            </Text>
+
           </Pressable>
+
         )}
       />
+
     </View>
   );
 }

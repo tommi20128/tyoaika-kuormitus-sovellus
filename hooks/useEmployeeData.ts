@@ -1,3 +1,4 @@
+// hooks/useEmployeeData.ts
 import { useEffect, useState } from 'react';
 import { doc, getDocs, query, where, collection, getDoc  } from 'firebase/firestore';
 import { db } from '@/Config';

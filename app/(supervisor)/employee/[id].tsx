@@ -1,12 +1,52 @@
-import { ScrollView, Text, StyleSheet, Pressable } from "react-native";
+// app/(supervisor)/employee/[id].tsx
+import { ScrollView, Text, StyleSheet, Pressable, ActivityIndicator } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
-import { mockEmployees } from "../../../data/mockEmployees";
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../../Config";
 import InfoCard from "@/components/InfoCard";
 import InfoRow from "@/components/InfoRow";
 
 export default function EmployeeDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const employee = mockEmployees.find(emp => emp.id === id);
+
+  const [employee, setEmployee] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEmployee = async () => {
+      try {
+        if (!id) return;
+
+        const ref = doc(db, "users", id);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          setEmployee(snap.data());
+        } else {
+          setEmployee(null);
+        }
+      } catch (error) {
+        console.log("Employee fetch error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEmployee();
+  }, [id]);
+
+  const handleBack = () => {
+    router.push("/(supervisor)/mainpage");
+  };
+
+  if (loading) {
+    return (
+      <ScrollView contentContainerStyle={styles.container}>
+        <ActivityIndicator size="large" />
+      </ScrollView>
+    );
+  }
 
   if (!employee) {
     return (
@@ -15,97 +55,77 @@ export default function EmployeeDetail() {
       </ScrollView>
     );
   }
-
-  const weekBalance = employee.weekHours - employee.weekGoal;
-  const monthBalance = employee.monthHours - employee.monthGoal;
-  const totalBalance = employee.totalWorked - employee.totalRequired;
-
-  const handleBack = () => {
-    router.push('/(supervisor)/mainpage'); // Vie takaisin esimiehen etusivulle
-  };
-
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
       <InfoCard>
-        <Text style={styles.name}>{employee.name}</Text>
-        <Text style={styles.role}>{employee.role}</Text>
+        <Text style={styles.name}>
+          {employee.firstName} {employee.lastName}
+        </Text>
+
+        <Text style={styles.role}>
+          {employee.title}
+        </Text>
       </InfoCard>
 
-      <InfoCard title="Viikko">
+      <InfoCard title="Työntekijän tiedot">
+
         <InfoRow
-          label="Työtunnit"
-          value={`${employee.weekHours} / ${employee.weekGoal}`}
+          label="Sähköposti"
+          value={employee.email}
         />
+
         <InfoRow
-          label="Tuntisaldo"
-          value={`${weekBalance >= 0 ? "+" : ""}${weekBalance} h`}
+          label="Esihenkilö"
+          value={employee.manager}
         />
+
         <InfoRow
-          label="Kuormitus"
-          value={`${employee.weekLoad} / 10`}
+          label="Rooli"
+          value={employee.role}
         />
+
       </InfoCard>
 
-      <InfoCard title="Kuukausi">
-        <InfoRow
-          label="Työtunnit"
-          value={`${employee.monthHours} / ${employee.monthGoal}`}
-        />
-        <InfoRow
-          label="Tuntisaldo"
-          value={`${monthBalance >= 0 ? "+" : ""}${monthBalance} h`}
-        />
-        <InfoRow
-          label="Kuormitus"
-          value={`${employee.monthLoad} / 10`}
-        />
-      </InfoCard>
-
-      <InfoCard title="Kokonaissaldo">
-        <InfoRow
-          label="Kokonaisero"
-          value={`${totalBalance >= 0 ? "+" : ""}${totalBalance} h`}
-        />
-      </InfoCard>
-
-      {/* Takaisin-nappi */}
-      <Pressable style={styles.backButton} onPress={handleBack}>
-        <Text style={styles.backButtonText}>← Takaisin</Text>
+      <Pressable
+        style={styles.backButton}
+        onPress={handleBack}
+      >
+        <Text style={styles.backButtonText}>
+          ← Takaisin
+        </Text>
       </Pressable>
 
     </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: "#FFFFFF",
-  },
-  name: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 6,
-  },
-  role: {
-    fontSize: 16,
-    color: "#666666",
-  },
-  text: {
-    fontSize: 15,
-    marginBottom: 4,
-  },
-   backButton: {
-    marginBottom: 16,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "#E0E0E0",
-    borderRadius: 6,
-    alignSelf: "flex-start",
-  },
-  backButtonText: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-});
+
+  const styles = StyleSheet.create({
+    container: {
+      padding: 20,
+      backgroundColor: "#FFFFFF",
+    },
+    name: {
+      fontSize: 22,
+      fontWeight: "bold",
+      marginBottom: 6,
+    },
+    role: {
+      fontSize: 16,
+      color: "#666666",
+    },
+    backButton: {
+      marginBottom: 16,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      backgroundColor: "#E0E0E0",
+      borderRadius: 6,
+      alignSelf: "flex-start",
+    },
+    backButtonText: {
+      fontSize: 16,
+      fontWeight: "500",
+    },
+  });
