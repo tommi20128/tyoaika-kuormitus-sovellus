@@ -1,12 +1,11 @@
 // hooks/useProfileData.ts
-import { useEffect, useState } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/Config';
 import { useAuth } from '@/context/AuthContext';
 import { ProfileData } from '@/types/profile';
+import { doc, getDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
-// Hookki käyttäjätietojen hakemiseen Firestoresta profiilisivua varten
-
+// Hookki kirjautuneen käyttäjän tietojen hakemiseen Firestoresta profiilisivua varten
 export const useProfileData = () => {
   const { user } = useAuth();
 
@@ -15,7 +14,7 @@ export const useProfileData = () => {
     lastName: '',
     email: '',
     title: '',
-    manager:'',
+    managerName: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -24,21 +23,25 @@ export const useProfileData = () => {
     const fetchUserData = async () => {
       if (!user) return;
 
-      const docSnap = await getDoc(doc(db, 'users', user.uid));
+      try {
+        const docSnap = await getDoc(doc(db, 'users', user.uid));
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
+        if (docSnap.exists()) {
+          const data = docSnap.data();
 
-        setProfile({
-          firstName: data.firstName || '',
-          lastName: data.lastName || '',
-          title: data.title || '',
-          email: user.email || '',
-          manager: data.manager || '',
-        });
+          setProfile({
+            firstName: data.firstName || '',
+            lastName: data.lastName || '',
+            title: data.title || '',
+            email: user.email || '',      // Käytetään vain kirjautuneen käyttäjän sähköpostia
+            managerName: data.manager || '',
+          });
+        }
+      } catch (error) {
+        console.log('Profiilin hakuvirhe:', error);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     };
 
     fetchUserData();

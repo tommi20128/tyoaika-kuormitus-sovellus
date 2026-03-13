@@ -1,53 +1,29 @@
 // app/(supervisor)/manage.tsx
-import { View, Text, StyleSheet, TextInput, Pressable, FlatList } from "react-native";
-import { useState, useEffect } from "react";
+import { View, Text, StyleSheet, TextInput, Pressable, FlatList, Alert } from "react-native";
+import { useState } from "react";
 import { router } from "expo-router";
 import { useEmployeeData } from "@/hooks/useEmployeeData";
-import { useAuth } from "@/context/AuthContext";
-import { Alert } from "react-native";
-import { doc, deleteDoc, collection, getDocs, query, onSnapshot, where } from "firebase/firestore";
+import { doc, deleteDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../Config";
 
 export default function ManageEmployees() {
-  const { user } = useAuth();
-  const { employees: fetchedEmployees } = useEmployeeData();
+  // -------------------------
+  // Hae työntekijät hookilla
+  // -------------------------
+  const { employees, loading } = useEmployeeData();
 
-  const [employees, setEmployees] = useState<any[]>([]);
   const [newEmployeeName, setNewEmployeeName] = useState("");
 
-  // Päivitä local state, kun hookista tulee uutta dataa
-  useEffect(() => {
-
-    const q = query(
-      collection(db, "users"),
-      where("role", "==", "employee")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-
-      const employeeList: any[] = [];
-
-      snapshot.forEach((doc) => {
-        employeeList.push({
-          id: doc.id,
-          ...doc.data(),
-        });
-      });
-
-      setEmployees(employeeList);
-
-    });
-
-    return () => unsubscribe();
-
-  }, []);
-
-  // Lisää työntekijä
+  // -------------------------
+  // Lisää työntekijä navigaatiolla add-employee sivulle
+  // -------------------------
   const addEmployee = () => {
     router.push('/(supervisor)/add-employee');
   };
 
-  // Poista työntekijä
+  // -------------------------
+  // Poista työntekijä ja hänen kaikki workEntries
+  // -------------------------
   const removeEmployee = (id: string) => {
     Alert.alert(
       "Poista työntekijä",
@@ -59,22 +35,17 @@ export default function ManageEmployees() {
           style: "destructive",
           onPress: async () => {
             try {
-              // hae kaikki workEntries
+              // Poista kaikki työntekijän workEntries
               const workRef = collection(db, "users", id, "workEntries");
               const snapshot = await getDocs(workRef);
-
-              // poista kaikki workEntries
               for (const entry of snapshot.docs) {
                 await deleteDoc(entry.ref);
               }
 
-              // poista käyttäjä
+              // Poista käyttäjä
               await deleteDoc(doc(db, "users", id));
 
               Alert.alert("Työntekijä poistettu");
-
-              // Päivitä local state heti, jotta työntekijä katoaa listalta
-              setEmployees(prev => prev.filter(emp => emp.id !== id));
 
             } catch (error: any) {
               console.log("Delete error:", error);
@@ -86,7 +57,13 @@ export default function ManageEmployees() {
     );
   };
 
-  if (!user) return null;
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Ladataan työntekijöitä...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -111,7 +88,10 @@ export default function ManageEmployees() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.employeeRow}>
-            <Text>{item.firstName} {item.lastName}</Text>
+            <View>
+              <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
+              <Text style={styles.role}>{item.title}</Text>
+            </View>
             <Pressable
               style={styles.deleteButton}
               onPress={() => removeEmployee(item.id)}
@@ -166,6 +146,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
+    fontWeight: "bold",
+  },
+  role: {
+    fontSize: 14,
+    color: "#666",
   },
   deleteButton: {
     backgroundColor: "#ff3b30",

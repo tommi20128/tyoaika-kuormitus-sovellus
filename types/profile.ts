@@ -8,5 +8,5 @@ export interface ProfileData {
   lastName: string;
   email: string;
   title: string;
-  manager: string;
+  managerName?: string;
 }

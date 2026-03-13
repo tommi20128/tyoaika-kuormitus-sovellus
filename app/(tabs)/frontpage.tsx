@@ -2,9 +2,8 @@
 import { ScrollView, Text, StyleSheet } from 'react-native';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useLocalSearchParams } from 'expo-router';
-import SummaryCard from '@/components/SummaryCard';
-import WorkEntryCard from '@/components/WorkEntryCard';
-import { calculateCareerTargetMinutes } from '@/utils/workUtils';
+import SummaryCard from '@/components/cards/SummaryCard';
+import WorkEntryCard from '@/components/cards/WorkEntryCard';
 
 export default function HomePage() {
   const { id: employeeId } = useLocalSearchParams<{ id: string }>();
@@ -21,6 +20,10 @@ export default function HomePage() {
   //Nämä arvot vaihdetaan oikeiksi, kun laskukaavat on tehty
   const TARGET_WEEK_HOURS = 37.5;
   const TARGET_MONTH_HOURS = 165;
+
+  const careerTargetHours = totalSummary?.targetMinutes
+    ? totalSummary.targetMinutes / 60
+    : 0;
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -54,7 +57,7 @@ export default function HomePage() {
         <SummaryCard
           title="Työtuntisaldo"
           summary={totalSummary}
-          targetHours={calculateCareerTargetMinutes([], TARGET_WEEK_HOURS / 5) / 60} // Oletetaan 5 työpäivää viikossa
+          targetHours={careerTargetHours} // Oletetaan 5 työpäivää viikossa
         />
       )}
     </ScrollView>
@@ -64,6 +67,8 @@ export default function HomePage() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: '#fff',
+    flexGrow: 1,
   },
   welcome: {
     fontSize: 24,

@@ -1,61 +1,62 @@
 // hooks/useEmployeeData.ts
-import { useEffect, useState } from 'react';
-import { doc, getDocs, query, where, collection, getDoc  } from 'firebase/firestore';
+
 import { db } from '@/Config';
 import { useAuth } from '@/context/AuthContext';
-import { EmployeeData } from '@/types/employees';
+import { User } from '@/types';
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 
-// Hookki työntekijöiden hakemiseen Firestoresta 
+// --------------------------------------------------
+// Hook työntekijöiden hakemiseen Firestoresta
+//
+// Hakee kaikki käyttäjät joiden manager = user.uid
+// --------------------------------------------------
 
 export const useEmployeeData = () => {
   const { user } = useAuth();
+  const [employees, setEmployees] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
 
-const [employees, setEmployees] = useState<EmployeeData[]>([]);
-const [loading, setLoading] = useState(true);
-
- useEffect(() => {
+  useEffect(() => {
     const fetchEmployees = async () => {
-        if (!user) return;
+      if (!user) return;
 
-        try {
-            const userSnap = await getDoc(doc(db, "users", user.uid));
+      try {
+        const userSnap = await getDoc(doc(db, "users", user.uid));
+        if (!userSnap.exists()) return;
 
-            if (!userSnap.exists()) return;
+        // Hae työntekijät joiden managerId = user.uid
+        const q = query(
+          collection(db, "users"),
+          where("managerId", "==", user.uid)
+        );
 
-            const userData = userSnap.data();
-            const managerName = `${userData.firstName} ${userData.lastName}`;
-            console.log("Manager name muodostettu:", managerName);
+        const querySnapshot = await getDocs(q);
 
-            const a = query(
-                collection(db, "users"),
-                where ("manager", "==", managerName)
-            );
-            const querySnapshot = await getDocs(a);
+        const listEmployees: User[] = querySnapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            title: data.title || "",
+            email: data.email || "",
+            role: data.role || "employee",
+            managerId: data.managerId || undefined,
+          };
+        });
 
-            const listEmployees: EmployeeData[] = [];
+        setEmployees(listEmployees);
 
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
+      } catch (error) {
+        console.log("Käyttäjiä ei voitu hakea", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                listEmployees.push ({
-                    id: doc.id,
-                    firstName: data.firstName || "",
-                    lastName: data.lastName || "",
-                    title: data.title || "",
-                });
-            });
-            setEmployees(listEmployees);
-            console.log(listEmployees)
-        } catch (error) {
-            console.log ("Käyttäjiä ei voitu hakea", error);
-        }finally {
-            setLoading(false);
-        }
-    }
     fetchEmployees();
- }, [user]);
+  }, [user]);
 
-
-  return {
-    employees, loading,};
+  return { employees, loading };
 };

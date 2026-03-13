@@ -1,6 +1,12 @@
+// app/(supervisor)/_layout.tsx
 import { Ionicons } from "@expo/vector-icons";
 import { router, Tabs, } from "expo-router";
 import { Pressable } from "react-native";
+
+interface EmployeeRouteParams {
+  id: string;
+  name?: string; // nimi tulee valinnaisesti mainpagelta
+}
 
 export default function SupervisorTabs() {
    const handleLogout = () => {
@@ -35,8 +41,12 @@ export default function SupervisorTabs() {
       />
       <Tabs.Screen
         name="employee/[id]"
-        options={{
-          href: null,
+        options={({ route }) => {
+          const params = route.params as EmployeeRouteParams | undefined;
+          return {
+            title: params?.name ? `${params.name} Historia` : "Historia",
+            href: null,
+          };
         }}
       />
       <Tabs.Screen

@@ -1,8 +1,8 @@
 // components/SummaryCard.tsx
 import { WorkSummary } from '@/types/summary';
-import InfoCard from './InfoCard';
-import InfoRow from './InfoRow';
-import { formatHourDiff } from '@/utils/workUtils';
+import { formatHourDiff } from '@/utils/timeUtils';
+import InfoCard from '../ui/InfoCard';
+import InfoRow from '../ui/InfoRow';
 
 interface Props {
   title: string;
@@ -15,6 +15,10 @@ interface Props {
 export default function SummaryCard({ title, summary, targetHours }: Props) {
   const diff = formatHourDiff(summary.goalDiff);
 
+  const targetTimeText = summary.targetMinutes
+  ? `${summary.hours} h ${summary.minutes} min / ${Math.floor(summary.targetMinutes / 60)} h ${summary.targetMinutes % 60} min`
+  : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`;
+
   return (
     <InfoCard title={title}>
       <InfoRow
@@ -25,8 +29,7 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
             ? `${summary.hours} h ${summary.minutes} min / ${(summary.targetMinutes / 60).toFixed(1)} h`
             : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`
         }
-        */
-        value={
+
           summary.targetMinutes !== undefined
             ? (() => {
               const targetHours = Math.floor(summary.targetMinutes / 60);
@@ -35,7 +38,9 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
               return `${summary.hours} h ${summary.minutes} min / ${targetHours} h ${targetMinutes} min`;
             })()
             : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`
-        }
+        
+        */
+        value={targetTimeText}
       />
 
       <InfoRow

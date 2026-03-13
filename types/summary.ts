@@ -13,3 +13,16 @@ export interface WorkSummary {
   goalDiff: number;
   targetMinutes?: number;
 }
+
+//toinen versio, joka käyttää minuutteja ja laskee keskiarvot erikseen. Mietitään käytetäänkö
+/*export interface WorkSummary {
+    totalMinutes: number;
+
+    averageStress: number;
+
+    averageWorkload: number;
+
+    targetMinutes?: number;
+
+    goalDiff?: number;
+}*/

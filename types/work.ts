@@ -2,14 +2,17 @@
 
 // Sisältää tyypit työaikatiedoille ja lomakedatalle
 
+export type WorkEntryId = string;
+
 // Työaikatiedot
 export interface DailyWorkEntry {
+  id: WorkEntryId;
+  userId: string;
   date: string;
   totalMinutes: number;
-  load1: number;
-  stressLoad1: number;
-  stressLoad2: number;
-  averageStress: number;
+  workload: number;
+  stress1: number;
+  stress2: number;
   comment?: string;
 }
 
@@ -17,8 +20,8 @@ export interface DailyWorkEntry {
 export interface WorkEntryFormData {
   hours: string;
   minutes: string;
-  load1: string;
-  stressLoad1: string;
-  stressLoad2: string;
+  workload: string;
+  stress1: string;
+  stress2: string;
   comment: string;
 }
