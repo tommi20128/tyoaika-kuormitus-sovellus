@@ -1,10 +1,10 @@
 // app/(tabs)/profile.tsx
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
-import { router } from 'expo-router';
+import { PasswordChange } from '@/components/profile/PasswordChange';
+import { UserInfoCard } from '@/components/profile/UserInfoCard';
 import { useAuth } from '@/context/AuthContext';
-import { PasswordChange } from '@/components/PasswordChange';
 import { useProfileData } from '@/hooks/useProfileData';
-import { UserInfoCard } from '@/components/UserInfoCard';
+import { router } from 'expo-router';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -29,7 +29,7 @@ export default function ProfilePage() {
         lastName={profile.lastName}
         email={profile.email}
         title={profile.title}
-        manager={profile.manager}
+        managerName={profile.managerName}
       />
 
       {/* Salasanan vaihto */}

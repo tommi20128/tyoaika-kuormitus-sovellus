@@ -1,7 +1,7 @@
-// components/WeekEntryList.tsx
+// components/history/WeekEntryList.tsx
 import { DailyWorkEntry } from '@/types/work';
 import { ScrollView } from 'react-native';
-import WorkEntryCard from './WorkEntryCard';
+import WorkEntryCard from '../cards/WorkEntryCard';
 
 interface Props {
   entries: DailyWorkEntry[];
@@ -12,8 +12,8 @@ interface Props {
 export default function WeekEntryList({ entries }: Props) {
   return (
     <ScrollView>
-      {entries.map((entry, index) => (
-        <WorkEntryCard key={index} entry={entry} />
+      {entries.map((entry) => (
+        <WorkEntryCard key={entry.id} entry={entry} />
       ))}
     </ScrollView>
   );

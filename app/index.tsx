@@ -1,5 +1,5 @@
 // app/index.tsx
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 import { Image, KeyboardAvoidingView, ScrollView, Platform } from "react-native";
 import { Alert, View, StyleSheet, TextInput } from "react-native";
 import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, } from 'firebase/auth';

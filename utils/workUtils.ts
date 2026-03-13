@@ -1,5 +1,6 @@
 // utils/workUtils.ts
-import { DailyWorkEntry } from '@/types/work';
+import { DailyWorkEntry } from '@/types';
+import { getISOWeekNumber } from './dateUtils';
 
 // -------------------------
 // Apufunktioita työaikakirjauksiin liittyen.
@@ -8,7 +9,7 @@ import { DailyWorkEntry } from '@/types/work';
 
 // Laskee taulukon DailyWorkEntry-objektien totalMinutes-kenttien summan.
 export const sumMinutes = (arr: DailyWorkEntry[]) =>
-  arr.reduce((acc, e) => acc + (e.totalMinutes || 0), 0);
+  arr.reduce((acc, e) => acc + e.totalMinutes, 0);
 
 // Laskee annettujen DailyWorkEntry-objektien keskiarvon annetulle numerokentälle.
 export const average = (
@@ -17,25 +18,35 @@ export const average = (
 ) =>
   arr.length
     ? arr.reduce(
-      (acc, e) => acc + ((e[key] as number) || 0),
+       (acc, e) => acc + Number(e[key] ?? 0),
       0
     ) / arr.length
     : 0;
 
-// Laskee tuntiero tavoitetuntien ja toteutuneiden tuntien välillä, ja muuntaa sen tunneiksi ja minuuteiksi.
-export const formatHourDiff = (diffInHours: number) => {
-  const totalMinutes = Math.round(diffInHours * 60);
-  const absMinutes = Math.abs(totalMinutes);
+ // Laskee viikon yhteenvetotiedot (tunnit ja kuormitus)
+export const calculateWeekSummary = (arr: DailyWorkEntry[]) => {
+    const totalMinutes = sumMinutes(arr);
 
-  const hours = Math.floor(absMinutes / 60);
-  const minutes = absMinutes % 60;
-
-  return {
-    isPositive: diffInHours >= 0,
-    hours,
-    minutes,
+    const avgLoad = average(arr, "workload").toFixed(1);
+       return {
+      hours: Math.floor(totalMinutes / 60),
+      minutes: totalMinutes % 60,
+      avgLoad,
+    };
   };
-};
+
+   // Viikon kirjausten ryhmittely kuukauden sisällä
+export const groupByWeek = (entries: DailyWorkEntry[]) => {
+    const weeks: Record<number, DailyWorkEntry[]> = {};
+
+    entries.forEach(entry => {
+      const week = getISOWeekNumber(new Date(entry.date));
+
+      if (!weeks[week]) weeks[week] = [];
+      weeks[week].push(entry);
+    });
+    return weeks;
+  };
 
 // -------------------------
 // Laskee koko työuran tavoiteminuutit
@@ -48,9 +59,10 @@ export const calculateCareerTargetMinutes = (
 ) => {
   if (!entries.length) return 0;
 
-  // Etsitään aikaisin kirjauspäivä
+  // Etsitään ensimmäinen kirjauspäivä
   const sorted = [...entries].sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
 
   const firstDate = new Date(sorted[0].date);
   const today = new Date();

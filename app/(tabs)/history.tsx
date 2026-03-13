@@ -1,17 +1,20 @@
 // app/(tabs)/history.tsx
 import { View, Text, StyleSheet } from 'react-native';
 import { useHistoryData } from '@/hooks/useHistoryData';
-import { useLocalSearchParams } from 'expo-router';
-import PeriodNavigator from '@/components/PeriodNavigator';
-import ViewToggleButton from '@/components/ViewToggleButton';
-import WeekSummaryList from '@/components/WeekSummaryList';
-import WeekEntryList from '@/components/WeekEntryList';
+import PeriodNavigator from '@/components/history/PeriodNavigator';
+import ViewToggleButton from '@/components/history/ViewToggleButton';
+import WeekSummaryList from '@/components/history/WeekSummaryList';
+import WeekEntryList from '@/components/history/WeekEntryList';
+import EmptyCard from '@/components/cards/EmptyCard';
 import { formatWeekLabel } from '@/utils/dateUtils';
-import EmptyCard from '@/components/EmptyCard';
+import { groupByWeek } from '@/utils/workUtils';
+
+interface HistoryPageProps {
+  employeeId?: string;
+}
 
 // Historia-sivu näyttää viikko- ja kuukausinäkymän
-export default function HistoryPage() {
-  const { id: employeeId } = useLocalSearchParams<{ id: string }>();
+export default function HistoryPage({ employeeId }: HistoryPageProps) {
 
   // Haetaan historia-data hookista
   const {
@@ -27,14 +30,14 @@ export default function HistoryPage() {
     view,                 // nykyinen näkymä ('week' tai 'month')
     setView,              // funktio näkymän vaihtamiseen
     monthLabel,           // nykyisen kuukauden label (esim. "Lokakuu 2024")
+    monthEntries,         // kaikki kyseisen kuukauden kirjaukset
     isFutureWeek,         // onko kyseinen viikko tulevaisuudessa
     targetMonthDate,      // kuukausinäkymän vertailupvm (kuukauden ensimmäinen päivä)
     isFutureMonth,        // onko kyseinen kuukausi tulevaisuudessa
-    groupByWeek,         // kuukauden kirjausten ryhmittely viikoittain
-    calculateWeekSummary, // funktio joka laskee viikon yhteenvetotiedot
   } = useHistoryData(employeeId);
 
-  const weeks = groupByWeek(); // Kuukausinäkymän data
+  // Kuukausinäkymän data: ryhmitellään kuukauden kirjaukset viikoittain
+  const monthWeeks = groupByWeek(monthEntries);
 
   // -------------------------
   // Sisäiset komponentit JSX:n selkeyttämiseen
@@ -72,13 +75,12 @@ export default function HistoryPage() {
       />
 
       {/* Viikkoyhteenvetolista */}
-      {Object.keys(weeks).length > 0 ? (
+      {Object.keys(monthWeeks).length > 0 ? (
         <WeekSummaryList
-          weeks={weeks}
-          calculateWeekSummary={calculateWeekSummary}
+          weeks={monthWeeks}
           onSelectWeek={(week) => {
             setView('week');
-            setWeekOffset(week - weekNumber);
+            setWeekOffset(week - weekNumber); // setWeekOffset on viikkonäkymän liuku, 0 = tämä viikko
           }}
         />
       ) : (
@@ -116,12 +118,5 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     marginBottom: 16
-  },
-  emptyCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 20,
-    alignItems: 'center',
-    marginTop: 10,
   },
 });

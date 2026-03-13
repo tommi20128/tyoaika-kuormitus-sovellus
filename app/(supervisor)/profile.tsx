@@ -1,45 +1,42 @@
-import { View, Text, StyleSheet, Pressable, Image, TextInput, Alert } from 'react-native';
-import { router } from 'expo-router';
+// app/(supervisor)/profile.tsx
+import { PasswordChange } from '@/components/profile/PasswordChange';
+import { UserInfoCard } from '@/components/profile/UserInfoCard';
 import { useAuth } from '@/context/AuthContext';
-import { PasswordChange } from '@/components/PasswordChange';
 import { useProfileData } from '@/hooks/useProfileData';
-import { UserInfoCard } from '@/components/UserInfoCard';
+import { router } from 'expo-router';
+import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function ProfilePage() {
-   const { user, loading: authLoading } = useAuth();
-    const { profile, loading } = useProfileData();
-  
-    if (authLoading || loading) return null;
-    if (!user) return null;
-  
-  
-    const handleLogout = () => {
-      Alert.alert('Vahvista', 'Haluatko varmasti kirjautua ulos?', [
-        { text: 'Peruuta', style: 'cancel' },
-        { text: 'Kirjaudu ulos', onPress: () => router.replace('/') }
-      ]);
-    };
-  
-    return (
-      <View style={styles.container}>
-  
-        <UserInfoCard
-          firstName={profile.firstName}
-          lastName={profile.lastName}
-          email={profile.email}
-          title={profile.title}
-          manager= {profile.manager}
-        />
-  
-        {/* Salasanan vaihto */}
-        <PasswordChange />
-  
-        {/* Kirjaudu ulos -nappi*/}
-        <Pressable style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Kirjaudu ulos</Text>
-        </Pressable>
-      </View>
-    );
+  const { user, loading: authLoading } = useAuth();
+  const { profile, loading } = useProfileData();
+
+  if (authLoading || loading) return null;
+  if (!user) return null;
+
+  const handleLogout = () => {
+    Alert.alert('Vahvista', 'Haluatko varmasti kirjautua ulos?', [
+      { text: 'Peruuta', style: 'cancel' },
+      { text: 'Kirjaudu ulos', onPress: () => router.replace('/') }
+    ]);
+  };
+
+  return (
+    <View style={styles.container}>
+      <UserInfoCard
+        firstName={profile.firstName}
+        lastName={profile.lastName}
+        email={profile.email}
+        title={profile.title}
+        managerName={profile.managerName}
+      />
+
+      <PasswordChange />
+
+      <Pressable style={styles.logoutButton} onPress={handleLogout}>
+        <Text style={styles.logoutText}>Kirjaudu ulos</Text>
+      </Pressable>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -49,12 +46,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     padding: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
   },
   logoutButton: {
     backgroundColor: '#FF3B30',
@@ -68,4 +59,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-

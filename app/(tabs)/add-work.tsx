@@ -1,20 +1,20 @@
 // app/(tabs)/add-work.tsx
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Alert,
-} from 'react-native';
-import { useState, useEffect } from 'react';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/Config';
 import { useAuth } from '@/context/AuthContext';
 import { WorkEntryFormData } from '@/types/work';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 
 export default function AddWorkPage() {
   const { user, loading } = useAuth();
@@ -23,9 +23,9 @@ export default function AddWorkPage() {
   const [formData, setFormData] = useState<WorkEntryFormData>({
     hours: '',
     minutes: '',
-    load1: '',
-    stressLoad1: '',
-    stressLoad2: '',
+    workload: '',
+    stress1: '',
+    stress2: '',
     comment: '',
   });
 
@@ -46,9 +46,9 @@ export default function AddWorkPage() {
         setFormData({
           hours: Math.floor(totalMinutes / 60).toString(),
           minutes: (totalMinutes % 60).toString(),
-          load1: (data.load1 || '').toString(),
-          stressLoad1: (data.stressLoad1 || '').toString(),
-          stressLoad2: (data.stressLoad2 || '').toString(),
+          workload: (data.workload || '').toString(),
+          stress1: (data.stress1 || '').toString(),
+          stress2: (data.stress2 || '').toString(),
           comment: data.comment || '',
         });
       }
@@ -60,11 +60,11 @@ export default function AddWorkPage() {
   // Parsitaan numerokentät ja tekstiedot oikeisiin muotoihin tallennusta varten
   const parseFormData = () => {
     return {
-      hours: parseInt(formData.hours),
-      minutes: parseInt(formData.minutes),
-      load1: parseInt(formData.load1),
-      stressLoad1: parseInt(formData.stressLoad1),
-      stressLoad2: parseInt(formData.stressLoad2),
+      hours: parseInt(formData.hours, 10),
+      minutes: parseInt(formData.minutes, 10),
+      load1: parseInt(formData.workload, 10),
+      stressLoad1: parseInt(formData.stress1, 10),
+      stressLoad2: parseInt(formData.stress2, 10),
       comment: formData.comment,
     };
   };
@@ -96,10 +96,10 @@ export default function AddWorkPage() {
 
     await setDoc(docRef, {
       totalMinutes,
-      load1: data.load1,
-      stressLoad1: data.stressLoad1,
-      stressLoad2: data.stressLoad2,
-      averageStress,
+      workload: data.load1,
+      stress1: data.stressLoad1,
+      stress2: data.stressLoad2,
+      //averageStress,
       comment: data.comment,
       date: todayId,
       createdAt: serverTimestamp(),
@@ -159,24 +159,24 @@ export default function AddWorkPage() {
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={formData.load1}
-          onChangeText={(val) => setFormData({ ...formData, load1: val })}
+          value={formData.workload}
+          onChangeText={(val) => setFormData({ ...formData, workload: val })}
         />
 
-        <Text style={styles.label}>Stressikysymys 1 (1–10)</Text>
+        <Text style={styles.label}>Oliko sinulla työpäivän aikana aikaa palautumiselle (1–10)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={formData.stressLoad1}
-          onChangeText={(val) => setFormData({ ...formData, stressLoad1: val })}
+          value={formData.stress1}
+          onChangeText={(val) => setFormData({ ...formData, stress1: val })}
         />
 
-        <Text style={styles.label}>Stressikysymys 2 (1–10)</Text>
+        <Text style={styles.label}>Koitko työsi merkitykselliseksi (1–10)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
-          value={formData.stressLoad2}
-          onChangeText={(val) => setFormData({ ...formData, stressLoad2: val })}
+          value={formData.stress2}
+          onChangeText={(val) => setFormData({ ...formData, stress2: val })}
         />
 
         {/* Kommentti */}
