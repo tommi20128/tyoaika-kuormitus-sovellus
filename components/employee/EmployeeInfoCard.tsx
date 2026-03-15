@@ -26,32 +26,31 @@ export const UserInfoCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    alignItems: 'center',
+    width: '100%',           // kortti vie koko leveyden
     marginBottom: 32,
+    paddingHorizontal: 16,   // hieman sisäistä marginaalia
+    // alignItems jätetty pois (stretch oletus)
   },
+
+  name: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#000',
+    textAlign: 'left',       // vasen tasaus
+  },
+
+  title: {
+    fontSize: 16,
+    color: '#555',
+    marginBottom: 4,
+    textAlign: 'left',       // vasen tasaus
+  },
+
   avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 16,
   },
-  name: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 4,
-  },
-  email: {
-    fontSize: 14,
-    color: '#777',
-  },
-  manager:{
-    fontSize: 16,
-    color: '#555',
-    marginBottom: 4,
-  }
 });

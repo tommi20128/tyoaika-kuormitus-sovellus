@@ -36,12 +36,15 @@ const styles = StyleSheet.create({
   toggleButton: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#ddd',
+    backgroundColor: "#FFFFFF",
     alignItems: 'center',
     borderRadius: 8,
     marginHorizontal: 4,
+    borderColor:"black",
+    borderWidth: 0.2,
   },
   activeToggle: {
-    backgroundColor: '#007AFF'
+    backgroundColor: "#1E3A8A",
+    
   }
 });

@@ -45,32 +45,40 @@ export default function SupervisorHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
     backgroundColor: "#FFFFFF",
   },
+
   title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 24,
+    color: "#000000",
   },
+
   card: {
-    backgroundColor: "#ffffff",
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 14,
+    backgroundColor: "#FFFFFF",
+    padding: 18,
+    borderRadius: 14,
+    marginBottom: 16,
+
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 3,
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
+
   name: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "600",
+    color: "#000000",
   },
+
   role: {
     fontSize: 14,
-    color: "#666",
+    color: "#1E3A8A", // tummansininen korostus
     marginTop: 4,
+    fontWeight: "500",
   },
 });

@@ -18,7 +18,7 @@ export const UserInfoCard = ({
         style={styles.avatar}
       />
 
-      <Text style={styles.name}>
+      <Text style={[styles.name, { textAlign: 'left' }]}>
         {firstName} {lastName}
       </Text>
       
@@ -48,19 +48,21 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 16,
   },
-  name: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
+name: {
+  fontSize: 22,
+  fontWeight: 'bold',
+  marginBottom: 4,
+  color: '#000',
+  textAlign: 'left',  
+},
   title: {
     fontSize: 16,
     color: '#555',
     marginBottom: 4,
   },
   email: {
-    fontSize: 14,
-    color: '#777',
+    fontSize: 16,
+    color: '#555',
   },
   manager:{
     fontSize: 16,

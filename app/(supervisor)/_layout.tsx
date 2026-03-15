@@ -22,7 +22,7 @@ export default function SupervisorTabs() {
         onPress={handleLogout}
         style={{marginRight: 16}}
         >
-          <Ionicons name="log-out-outline" size={32} color="red" />
+          <Ionicons name="log-out-outline" size={38} color="#1E3A8A" />
         </Pressable>
       )
        }}

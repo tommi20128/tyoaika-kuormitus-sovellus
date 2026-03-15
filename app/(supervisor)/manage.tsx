@@ -71,14 +71,14 @@ export default function ManageEmployees() {
 
       {/* Lisää uusi työntekijä */}
       <View style={styles.addContainer}>
-        <TextInput
+        {/*<TextInput
           style={styles.input}
           placeholder="Työntekijän nimi"
           value={newEmployeeName}
           onChangeText={setNewEmployeeName}
-        />
+        />*/}
         <Pressable style={styles.addButton} onPress={addEmployee}>
-          <Text style={styles.buttonText}>Lisää</Text>
+          <Text style={styles.buttonText}>Lisää uusi työntekijä</Text>
         </Pressable>
       </View>
 
@@ -108,58 +108,91 @@ export default function ManageEmployees() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
     backgroundColor: "#FFFFFF",
   },
+
   title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    marginBottom: 20,
+    fontSize: 28,
+    fontWeight: "700",
+    marginBottom: 24,
+    color: "#000000",
   },
+
   addContainer: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
+
   input: {
-    backgroundColor: "#f3ebeb",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
+    width: "100%",
+    height: 50,
+    borderColor: "#D1D5DB",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 12,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#000000",
   },
+
   addButton: {
-    backgroundColor: "#007AFF",
-    padding: 12,
-    borderRadius: 8,
+    height: 44,
+    backgroundColor: "#1E3A8A", // tummansininen
+    borderRadius: 10,
+    justifyContent: "center",
     alignItems: "center",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
   },
+
   buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
+
   employeeRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#f4efef",
-    padding: 14,
-    borderRadius: 10,
-    marginBottom: 12,
+    backgroundColor: "#FFFFFF",
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 14,
+
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 3,
   },
+
   name: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
+    color: "#000000",
   },
+
   role: {
     fontSize: 14,
-    color: "#666",
+    color: "#1E3A8A",
+    marginTop: 2,
   },
+
   deleteButton: {
-    backgroundColor: "#ff3b30",
+    backgroundColor: "#1E3A8A",
     paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
   },
+
   deleteText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: "#FFFFFF",
+    fontWeight: "600",
   },
 });

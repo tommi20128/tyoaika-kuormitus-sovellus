@@ -125,9 +125,10 @@ export default function AddWorkPage() {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: '#FFFFFF' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // IOS: siirtää ylös, Android: scrollaa
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0} // säädä tarpeen mukaan
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
+     // säädä tarpeen mukaan
     >
       <ScrollView
         contentContainerStyle={{ padding: 20, paddingBottom: 150 }}
@@ -220,6 +221,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 16,
     fontSize: 16,
+    borderColor:'#Black',
+    borderWidth:0.2,
   },
   row: {
     flexDirection: 'row',
@@ -231,21 +234,32 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     width: '48%',
+    borderColor:'#Black',
+    borderWidth:0.2,
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
   },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
+button:{
+     width: "100%",
+    height: 42,
+    backgroundColor: "#1E3A8A", // tummansininen
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 10,
+
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
+  
   buttonText: {
-    color: '#ffffff',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "600",
   },
 });
