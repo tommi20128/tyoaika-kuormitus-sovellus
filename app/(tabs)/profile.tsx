@@ -3,8 +3,9 @@ import { PasswordChange } from '@/components/profile/PasswordChange';
 import { UserInfoCard } from '@/components/profile/UserInfoCard';
 import { useAuth } from '@/context/AuthContext';
 import { useProfileData } from '@/hooks/useProfileData';
+import CustomButton from "@/components/ui/CustomButton";
 import { router } from 'expo-router';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -21,52 +22,80 @@ export default function ProfilePage() {
     ]);
   };
 
-  return (
-    <View style={styles.container}>
+return (
+  <ScrollView
+    contentContainerStyle={styles.container}
+    showsVerticalScrollIndicator={false}
+  >
 
-      <UserInfoCard
-        firstName={profile.firstName}
-        lastName={profile.lastName}
-        email={profile.email}
-        title={profile.title}
-        managerName={profile.managerName}
-      />
+<UserInfoCard
+  firstName={profile.firstName}
+  lastName={profile.lastName}
+  email={profile.email}
+  title={profile.title}
+  managerName={profile.managerName}
+/>
 
-      {/* Salasanan vaihto */}
+    {/* Salasanan vaihto */}
+    <View style={styles.card}>
       <PasswordChange />
-
-      {/* Kirjaudu ulos -nappi*/}
-      <Pressable style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Kirjaudu ulos</Text>
-      </Pressable>
     </View>
-  );
+
+    {/* Kirjaudu ulos (Tarviiko tätä?) */}
+    <Pressable
+      style={({ pressed }) => [
+        styles.logoutButton,
+        pressed && { opacity: 0.85 }
+      ]}
+      onPress={handleLogout}
+    >
+      <Text style={styles.logoutText}>Kirjaudu ulos</Text>
+    </Pressable>
+
+  </ScrollView>
+);
 }
 
 const styles = StyleSheet.create({
+
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
-  },
+  flexGrow: 1,
+  padding: 24,
+  backgroundColor: "#FFFFFF",
+},
+
+card: {
+  width: "100%",
+  backgroundColor: "#FFFFFF",
+  borderRadius: 14,
+  padding: 18,
+  marginBottom: 18,
+  shadowColor: "#000",
+  shadowOpacity: 0.12,
+  shadowRadius: 8,
+  shadowOffset: { width: 0, height: 4 },
+  elevation: 4,
+},
+
   logoutButton: {
-    backgroundColor: '#FF3B30',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    height: 52,
+    backgroundColor: "#DC2626",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 4,
   },
+
   logoutText: {
-    color: '#fff',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "600",
   },
 });
 

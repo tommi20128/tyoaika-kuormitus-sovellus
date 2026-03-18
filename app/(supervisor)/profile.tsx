@@ -1,6 +1,7 @@
 // app/(supervisor)/profile.tsx
 import { PasswordChange } from '@/components/profile/PasswordChange';
 import { UserInfoCard } from '@/components/profile/UserInfoCard';
+import CustomButton from '@/components/ui/CustomButton';
 import { useAuth } from '@/context/AuthContext';
 import { useProfileData } from '@/hooks/useProfileData';
 import { router } from 'expo-router';
@@ -32,8 +33,8 @@ export default function ProfilePage() {
 
       <PasswordChange />
 
-      <Pressable style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Kirjaudu ulos</Text>
+        <Pressable style={styles.button} onPress={handleLogout}>
+        <Text style={styles.buttonText}>Kirjaudu ulos</Text>
       </Pressable>
     </View>
   );
@@ -47,15 +48,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 20,
   },
-  logoutButton: {
-    backgroundColor: '#FF3B30',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+  button:{
+     width: "100%",
+    height: 42,
+    backgroundColor: "#1E3A8A", // tummansininen
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
-  logoutText: {
-    color: '#fff',
+  
+  buttonText: {
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "600",
   },
 });

@@ -25,7 +25,7 @@ export default function PeriodNavigator({
         onPress={onPrev}
         disabled={disablePrev}
       >
-        <Text>◀</Text>
+        <Text style={styles.buttonText}>◀</Text>
       </Pressable>
 
       <Text style={styles.label}>{label}</Text>
@@ -36,7 +36,7 @@ export default function PeriodNavigator({
         onPress={onNext}
         disabled={disableNext}
       >
-        <Text>▶</Text>
+        <Text style={styles.buttonText}>▶</Text>
       </Pressable>
     </View>
   );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 10,
-    backgroundColor: '#ccc',
+    backgroundColor: "#1E3A8A",
     borderRadius: 6,
   },
   label: {
@@ -60,5 +60,10 @@ const styles = StyleSheet.create({
   },
   disabled: {
     opacity: 0.3,
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

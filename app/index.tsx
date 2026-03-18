@@ -91,7 +91,7 @@ try {
     <View style={styles.container}>
      <Image
   source={require("../assets/images/sovellus1.png")}
-  style={{ width: 200, height: 200, marginBottom: 50 }}
+  style={{ width: 220, height: 220, marginBottom: 40 }}
 />
       <TextInput
         style={styles.input}
@@ -158,52 +158,82 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    padding: 20,
+    padding: 24,
   },
+
   image: {
-    width: "80%",
+    width: 200,
     height: 200,
     marginBottom: 40,
   },
+
   input: {
     width: "100%",
-    height: 50,
-    borderColor: "#ccc",
+    height: 52,
+    borderColor: "#D1D5DB",
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    backgroundColor: "white",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#000000",
   },
+
   forgotPassword: {
-  marginTop: 15,
-  color: "#007AFF",
-  fontSize: 14,
-},
+    marginTop: 10,
+    color: "#1E3A8A",
+    fontSize: 14,
+    fontWeight: "500",
+  },
 
-modalBackground: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "rgba(0,0,0,0.5)",
-},
+  button: {
+    width: "100%",
+    height: 52,
+    backgroundColor: "#1E3A8A", 
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
 
-modalContainer: {
-  width: "80%",
-  backgroundColor: "white",
-  padding: 20,
-  borderRadius: 10,
-  alignItems: "center",
-},
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
 
-modalTitle: {
-  fontSize: 18,
-  fontWeight: "bold",
-  marginBottom: 20,
-},
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
 
-cancelText: {
-  marginTop: 15,
-  color: "red",
-}
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.45)",
+  },
+
+  modalContainer: {
+    width: "85%",
+    backgroundColor: "#FFFFFF",
+    padding: 24,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 20,
+    color: "#000",
+  },
+
+  cancelText: {
+    marginTop: 18,
+    color: "#1E3A8A",
+    fontWeight: "500",
+  },
 });
