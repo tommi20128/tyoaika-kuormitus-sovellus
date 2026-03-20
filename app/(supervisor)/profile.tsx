@@ -28,7 +28,6 @@ export default function ProfilePage() {
         lastName={profile.lastName}
         email={profile.email}
         title={profile.title}
-        managerName={profile.managerName}
       />
 
       <PasswordChange />

@@ -21,7 +21,10 @@ export const useProfileData = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      if (!user) return;
+      if (!user) {
+        setLoading(false);
+        return;
+      }
 
       try {
         const docSnap = await getDoc(doc(db, 'users', user.uid));

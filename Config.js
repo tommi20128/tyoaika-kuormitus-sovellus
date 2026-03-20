@@ -7,7 +7,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyBcEAgqH42LpdUb83P5AddTc6aTi17DIBY",
   authDomain: "workbalance-859f1.firebaseapp.com",
   projectId: "workbalance-859f1",
