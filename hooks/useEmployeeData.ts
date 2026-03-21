@@ -3,7 +3,7 @@
 import { db } from '@/Config';
 import { useAuth } from '@/context/AuthContext';
 import { User } from '@/types';
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 // --------------------------------------------------
@@ -18,44 +18,43 @@ export const useEmployeeData = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchEmployees = async () => {
-      if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const userSnap = await getDoc(doc(db, "users", user.uid));
-        if (!userSnap.exists()) return;
+    // Query työntekijöille
+    const q = query(
+      collection(db, "users"),
+      where("managerId", "==", user.uid)
+    );
 
-        // Hae työntekijät joiden managerId = user.uid
-        const q = query(
-          collection(db, "users"),
-          where("managerId", "==", user.uid)
-        );
+    // Reaaliaikainen kuuntelu
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const listEmployees: User[] = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
 
-        const querySnapshot = await getDocs(q);
+        return {
+          id: doc.id,
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          title: data.title || "",
+          email: data.email || "",
+          role: data.role || "employee",
+          managerId: data.managerId || null,
+        };
+      });
 
-        const listEmployees: User[] = querySnapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            firstName: data.firstName || "",
-            lastName: data.lastName || "",
-            title: data.title || "",
-            email: data.email || "",
-            role: data.role || "employee",
-            managerId: data.managerId || undefined,
-          };
-        });
+      setEmployees(listEmployees);
+      setLoading(false);
+    }, (error) => {
+      console.log("Käyttäjiä ei voitu hakea", error);
+      setLoading(false);
+    });
 
-        setEmployees(listEmployees);
+    // Cleanup (tärkeä!)
+    return () => unsubscribe();
 
-      } catch (error) {
-        console.log("Käyttäjiä ei voitu hakea", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEmployees();
   }, [user]);
 
   return { employees, loading };

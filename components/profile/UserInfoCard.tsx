@@ -21,7 +21,7 @@ export const UserInfoCard = ({
       <Text style={[styles.name, { textAlign: 'left' }]}>
         {firstName} {lastName}
       </Text>
-      
+
       <Text style={styles.title}>
         {title}
       </Text>
@@ -30,9 +30,11 @@ export const UserInfoCard = ({
         {email}
       </Text>
 
-      <Text style={styles.manager}>
-        {`Esihenkilö: ${manager}`}
-      </Text>
+      {manager && (
+        <Text style={styles.manager}>
+          Esihenkilö: {manager}
+        </Text>
+      )}
     </View>
   );
 };
@@ -48,13 +50,13 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 16,
   },
-name: {
-  fontSize: 22,
-  fontWeight: 'bold',
-  marginBottom: 4,
-  color: '#000',
-  textAlign: 'left',  
-},
+  name: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    color: '#000',
+    textAlign: 'left',
+  },
   title: {
     fontSize: 16,
     color: '#555',
@@ -64,7 +66,7 @@ name: {
     fontSize: 16,
     color: '#555',
   },
-  manager:{
+  manager: {
     fontSize: 16,
     color: '#555',
     marginBottom: 4,

@@ -6,6 +6,7 @@ import { useEmployeeData } from "@/hooks/useEmployeeData";
 import { doc, deleteDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../Config";
 
+
 export default function ManageEmployees() {
   // -------------------------
   // Hae työntekijät hookilla
@@ -19,6 +20,10 @@ export default function ManageEmployees() {
   // -------------------------
   const addEmployee = () => {
     router.push('/(supervisor)/add-employee');
+  };
+
+  const editEmployee = (id: string) => {
+    router.push(`/(supervisor)/edit-employee/${id}`);
   };
 
   // -------------------------
@@ -68,15 +73,10 @@ export default function ManageEmployees() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Työntekijähallinta</Text>
+      {/* Halutaanko tähän hakukenttä nimellä, jos joskus työntekijöitä olisi satoja? */}
 
       {/* Lisää uusi työntekijä */}
       <View style={styles.addContainer}>
-        {/*<TextInput
-          style={styles.input}
-          placeholder="Työntekijän nimi"
-          value={newEmployeeName}
-          onChangeText={setNewEmployeeName}
-        />*/}
         <Pressable style={styles.addButton} onPress={addEmployee}>
           <Text style={styles.buttonText}>Lisää uusi työntekijä</Text>
         </Pressable>
@@ -92,12 +92,20 @@ export default function ManageEmployees() {
               <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
               <Text style={styles.role}>{item.title}</Text>
             </View>
-            <Pressable
-              style={styles.deleteButton}
-              onPress={() => removeEmployee(item.id)}
-            >
-              <Text style={styles.deleteText}>Poista</Text>
-            </Pressable>
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <Pressable
+                style={styles.editButton}
+                onPress={() => editEmployee(item.id)}
+              >
+                <Text style={styles.editText}>Muokkaa</Text>
+              </Pressable>
+              <Pressable
+                style={styles.deleteButton}
+                onPress={() => removeEmployee(item.id)}
+              >
+                <Text style={styles.deleteText}>Poista</Text>
+              </Pressable>
+            </View>
           </View>
         )}
       />
@@ -192,6 +200,17 @@ const styles = StyleSheet.create({
   },
 
   deleteText: {
+    color: "#FFFFFF",
+    fontWeight: "600",
+  },
+  editButton: {
+    backgroundColor: "#10B981",
+    paddingVertical: 6,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+
+  },
+  editText: {
     color: "#FFFFFF",
     fontWeight: "600",
   },
