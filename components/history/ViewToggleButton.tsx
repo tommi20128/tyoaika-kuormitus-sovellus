@@ -14,15 +14,16 @@ export default function ViewToggleButton({ value, onChange }: Props) {
       <Pressable
         style={[styles.toggleButton, value === 'week' && styles.activeToggle]}
         onPress={() => onChange('week')}
+        
       >
-        <Text>Viikko</Text>
+    <Text style={[styles.text, value === 'week' && styles.activeText]}>Viikko</Text>
       </Pressable>
 
       <Pressable
         style={[styles.toggleButton, value === 'month' && styles.activeToggle]}
         onPress={() => onChange('month')}
       >
-        <Text>Kuukausi</Text>
+    <Text style={[styles.text,value === 'month' && styles.activeText]}>Kuukausi </Text>
       </Pressable>
     </View>
   );
@@ -45,6 +46,15 @@ const styles = StyleSheet.create({
   },
   activeToggle: {
     backgroundColor: "#1E3A8A",
+    color: "#FFFFFF",
     
+  },
+  text:{
+    color: "#000000",
+    fontWeight: "bold",
+  },
+  activeText: {
+    color: "#FFFFFF",
+
   }
 });
