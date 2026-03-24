@@ -1,4 +1,4 @@
-// components/InfoRow.tsx
+// components/ui/InfoRow.tsx
 import { View, Text, StyleSheet } from "react-native";
 
 type InfoRowProps = {

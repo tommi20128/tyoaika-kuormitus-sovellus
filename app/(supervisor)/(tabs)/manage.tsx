@@ -1,34 +1,33 @@
-// app/(supervisor)/manage.tsx
-import { View, Text, StyleSheet, TextInput, Pressable, FlatList, Alert } from "react-native";
+// app/(supervisor)/(tabs)/manage.tsx
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  Alert,
+} from "react-native";
 import { useState } from "react";
 import { router } from "expo-router";
-import { useEmployeeData } from "@/hooks/useEmployeeData";
+import { useUsers } from "@/hooks/useUsers";
 import { doc, deleteDoc, collection, getDocs } from "firebase/firestore";
-import { db } from "../../Config";
-
+import { db } from "../../../Config";
 
 export default function ManageEmployees() {
-  // -------------------------
-  // Hae työntekijät hookilla
-  // -------------------------
-  const { employees, loading } = useEmployeeData();
+  // toggle tila
+  const [mode, setMode] = useState<"mine" | "all">("mine");
 
-  const [newEmployeeName, setNewEmployeeName] = useState("");
+  // uusi hook
+  const { users: employees, loading } = useUsers(mode);
 
-  // -------------------------
-  // Lisää työntekijä navigaatiolla add-employee sivulle
-  // -------------------------
   const addEmployee = () => {
-    router.push('/(supervisor)/add-employee');
+    router.push("/(supervisor)/add-employee");
   };
 
   const editEmployee = (id: string) => {
     router.push(`/(supervisor)/edit-employee/${id}`);
   };
 
-  // -------------------------
-  // Poista työntekijä ja hänen kaikki workEntries
-  // -------------------------
   const removeEmployee = (id: string) => {
     Alert.alert(
       "Poista työntekijä",
@@ -40,24 +39,21 @@ export default function ManageEmployees() {
           style: "destructive",
           onPress: async () => {
             try {
-              // Poista kaikki työntekijän workEntries
               const workRef = collection(db, "users", id, "workEntries");
               const snapshot = await getDocs(workRef);
+
               for (const entry of snapshot.docs) {
                 await deleteDoc(entry.ref);
               }
 
-              // Poista käyttäjä
               await deleteDoc(doc(db, "users", id));
 
               Alert.alert("Työntekijä poistettu");
-
             } catch (error: any) {
-              console.log("Delete error:", error);
               Alert.alert("Virhe", error.message);
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
@@ -73,25 +69,44 @@ export default function ManageEmployees() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Työntekijähallinta</Text>
-      {/* Halutaanko tähän hakukenttä nimellä, jos joskus työntekijöitä olisi satoja? */}
 
-      {/* Lisää uusi työntekijä */}
+      {/* 🔄 Toggle */}
+      <View style={styles.toggleContainer}>
+        <Pressable
+          style={[styles.toggleButton, mode === "mine" && styles.active]}
+          onPress={() => setMode("mine")}
+        >
+          <Text>Omat alaiset</Text>
+        </Pressable>
+
+        <Pressable
+          style={[styles.toggleButton, mode === "all" && styles.active]}
+          onPress={() => setMode("all")}
+        >
+          <Text>Kaikki</Text>
+        </Pressable>
+      </View>
+
+      {/* ➕ Lisää */}
       <View style={styles.addContainer}>
         <Pressable style={styles.addButton} onPress={addEmployee}>
           <Text style={styles.buttonText}>Lisää uusi työntekijä</Text>
         </Pressable>
       </View>
 
-      {/* Työntekijälista */}
+      {/* 📋 Lista */}
       <FlatList
         data={employees}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.employeeRow}>
             <View>
-              <Text style={styles.name}>{item.firstName} {item.lastName}</Text>
+              <Text style={styles.name}>
+                {item.firstName} {item.lastName}
+              </Text>
               <Text style={styles.role}>{item.title}</Text>
             </View>
+
             <View style={{ flexDirection: "row", gap: 10 }}>
               <Pressable
                 style={styles.editButton}
@@ -99,6 +114,7 @@ export default function ManageEmployees() {
               >
                 <Text style={styles.editText}>Muokkaa</Text>
               </Pressable>
+
               <Pressable
                 style={styles.deleteButton}
                 onPress={() => removeEmployee(item.id)}
@@ -214,4 +230,19 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "600",
   },
+  toggleContainer: {
+  flexDirection: "row",
+  marginBottom: 16,
+  gap: 10,
+},
+
+toggleButton: {
+  padding: 10,
+  borderRadius: 8,
+  backgroundColor: "#E5E7EB",
+},
+
+active: {
+  backgroundColor: "#1E3A8A",
+},
 });

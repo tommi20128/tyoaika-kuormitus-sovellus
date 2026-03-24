@@ -1,4 +1,4 @@
-// app/(supervisor)/profile.tsx
+// app/(supervisor)/(tabs)/profile.tsx
 import { PasswordChange } from '@/components/profile/PasswordChange';
 import { UserInfoCard } from '@/components/profile/UserInfoCard';
 import CustomButton from '@/components/ui/CustomButton';

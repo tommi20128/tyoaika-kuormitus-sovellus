@@ -19,8 +19,12 @@ import { getApps, initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseConfig } from "@/Config";
 import { useRouter } from "expo-router";
-import { useSupervisors } from "@/hooks/useSupervisorData";
+import { useUsers } from "@/hooks/useUsers";
 
+
+// -------------------------
+// Tyypit
+// -------------------------
 type Role = "employee" | "supervisor";
 
 type Manager = {
@@ -36,16 +40,26 @@ export default function AddEmployee() {
   const [password, setPassword] = useState("");
   const [title, setTitle] = useState("");
   const [role, setRole] = useState<Role>("employee");
+
+  // Modal (esimiesvalinta)
   const [manager, setManager] = useState<Manager | null>(null);
+
+  // Modal (esimiesvalinta)
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { supervisors } = useSupervisors();
+  // Data ja navigaatio
+  const { users: supervisors } = useUsers("supervisors");
   const router = useRouter();
 
+  // Navigointi takaisin
   const handleBack = () => {
-    router.replace("/(supervisor)/mainpage");
+    //router.replace("/(supervisor)/manage");
+    router.back();
   }
 
+  // -------------------------
+  // Form tyhjennys
+  // -------------------------
   const resetForm = () => {
     setFirstName("");
     setLastName("");
@@ -56,19 +70,29 @@ export default function AddEmployee() {
     setRole("employee");
   };
 
+
+  // -------------------------
+  // Käyttäjän luonti
+  // -------------------------
   const handleRegister = async () => {
+
+    // Validointi
     if (!firstName || !lastName || !email || !password || !title) {
       Alert.alert("Virhe", "Täytä kaikki kentät");
       return false;
     }
 
+    // Employee tarvitsee esimiehen
     if (role === "employee" && !manager) {
       Alert.alert("Virhe", "Valitse esimies työntekijälle");
       return;
     }
 
     try {
-      // Vältetään duplicate Firebase app
+      // -------------------------
+      // Luodaan Secondary Firebase app
+      // (ettei nykyinen kirjautunut käyttäjä vaihdu)
+      // -------------------------
       let secondaryApp = getApps().find(app => app.name === "Secondary");
 
       if (!secondaryApp) {
@@ -77,7 +101,9 @@ export default function AddEmployee() {
 
       const secondaryAuth = getAuth(secondaryApp);
 
-      // Luodaan käyttäjä ilman että pää-auth vaihtuu
+      // -------------------------
+      // Luo käyttäjä Firebase Authiin
+      // -------------------------
       const userCredential = await createUserWithEmailAndPassword(
         secondaryAuth,
         email,
@@ -86,7 +112,9 @@ export default function AddEmployee() {
 
       const uid = userCredential.user.uid;
 
-      // Lisää käyttäjä Firestoreen
+      // -------------------------
+      // Tallenna käyttäjä Firestoreen
+      // -------------------------
       await setDoc(doc(db, "users", uid), {
         uid,
         firstName,
@@ -109,7 +137,7 @@ export default function AddEmployee() {
       // Kirjaudu ulos Secondary authista
       await secondaryAuth.signOut();
 
-      // Tyhjennetään kentät
+      // Tyhjennetään form kentät
       resetForm();
 
     } catch (error: any) {
@@ -119,7 +147,7 @@ export default function AddEmployee() {
   };
 
   // -------------------------
-  // Render esimies listaa modalissa
+  // Render: esihenkilö listan item
   // -------------------------
   const renderManagerItem = ({ item }: { item: any }) => (
     <Pressable
@@ -133,8 +161,13 @@ export default function AddEmployee() {
     </Pressable>
   );
 
+  // -------------------------
+  // Render: roolin valinta
+  // -------------------------
   const renderRoleSelector = () => (
     <View style={styles.roleContainer}>
+
+      {/* Employee */}
       <Pressable
         style={[
           styles.roleButton,
@@ -147,6 +180,7 @@ export default function AddEmployee() {
         <Text>Employee</Text>
       </Pressable>
 
+      {/* Supervisor */}
       <Pressable
         style={[
           styles.roleButton,
@@ -162,6 +196,9 @@ export default function AddEmployee() {
     </View>
   );
 
+  // -------------------------
+  // Render: esimiehen valinta
+  // -------------------------
   const renderManagerSelector = () => {
     if (role !== "employee") return null;
 
@@ -185,28 +222,37 @@ export default function AddEmployee() {
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Lisää työntekijä</Text>
 
+        {/* Perustiedot */}
         <TextInput style={styles.input} placeholder="Etunimi" value={firstName} onChangeText={setFirstName} />
         <TextInput style={styles.input} placeholder="Sukunimi" value={lastName} onChangeText={setLastName} />
         <TextInput style={styles.input} placeholder="Sähköposti" value={email} onChangeText={setEmail} autoCapitalize="none" />
         <TextInput style={styles.input} placeholder="Salasana" value={password} onChangeText={setPassword} secureTextEntry />
         <TextInput style={styles.input} placeholder="Titteli" value={title} onChangeText={setTitle} />
 
+        {/* Rooli + esimies */}
         {renderRoleSelector()}
         {renderManagerSelector()}
 
+        {/* Toiminnot */}
         <Button title="Luo käyttäjä" onPress={handleRegister} />
         <View style={{ height: 10 }} />
-        <Button title="Peruuta" onPress={handleBack} />
+        <Button title="Peruuta"  onPress={() => router.back()} />
 
-        {/* MODAL */}
+        {/* MODAL: esimiehen valinta */}
         <Modal visible={modalVisible} transparent animationType="slide">
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
+
+              {/* Lista esimiehistä */}
               <FlatList
                 data={supervisors}
                 keyExtractor={(item) => item.id}
                 renderItem={renderManagerItem}
               />
+
+                {/* viiva viimeisen nimen jälkeen*/}
+                <View style={styles.divider} />
+              
               <Button title="Peruuta" onPress={() => setModalVisible(false)} />
             </View>
           </View>
@@ -284,5 +330,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#1E3A8A",
     borderColor: "#1E3A8A",
     color: "#fff",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ddd",
+    marginBottom: 12,
   },
 });

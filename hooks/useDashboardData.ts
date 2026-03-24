@@ -8,29 +8,37 @@ import { minutesToHoursMinutes } from '@/utils/timeUtils';
 import { useWorkEntries } from '@/hooks/useWorkEntries';
 import { useEffect, useState } from 'react';
 
-const DAILY_TARGET_HOURS = 7.5;
+const DAILY_TARGET_HOURS = 7.5; //Kovakoodattu päivän tavoitetyäaika
 
 // --------------------------------------------------
 // Hook etusivun datan laskemiseen.
 //
 // - käyttää useWorkEntries hookia
-// - laskee päivän, viikon ja kuukauden yhteenvedot
+// Vastaa:
+// - tämän päivän kirjauksesta
+// - viikon yhteenvedosta
+// - kuukauden yhteenvedosta
+// - koko työuran saldosta
 // --------------------------------------------------
 
 export function useDashboardData(employeeId?: string) {
 
   const { user } = useAuth();
 
+  // Haetaan kaikki workEntries (oma tai valitun työntekijän)
   const entries = useWorkEntries(employeeId);
 
   const [firstName, setFirstName] = useState('');
+
+  // Päivän yksittäinen kirjaus
   const [todayEntry, setTodayEntry] = useState<DailyWorkEntry | null>(null);
 
+  // Yhteenvedot eri aikajaksoille
   const [weekSummary, setWeekSummary] = useState<WorkSummary | null>(null);
   const [monthSummary, setMonthSummary] = useState<WorkSummary | null>(null);
   const [totalSummary, setTotalSummary] = useState<WorkSummary | null>(null);
 
-  const todayId = new Date().toISOString().split('T')[0];
+  const [hasEntries, setHasEntries] = useState(false);
 
   // -------------------------
   // Päivitetään dashboard kun entries muuttuu
@@ -38,21 +46,31 @@ export function useDashboardData(employeeId?: string) {
 
   useEffect(() => {
 
-    if (!entries.length) return;
+    if (!entries.length) {
+    setHasEntries(false);
+    setTodayEntry(null);
+    setWeekSummary(null);
+    setMonthSummary(null);
+    setTotalSummary(null);
+    return;
+  }
+
+  setHasEntries(true);
 
     const now = new Date();
+    
+    // YYYY-MM-DD → sama formaatti kuin Firestoressa
+    const todayId = now.toISOString().split('T')[0];
 
     // -------------------------
     // Päivän kirjaus
     // -------------------------
-
     const todayData = entries.find(e => e.date === todayId) || null;
     setTodayEntry(todayData);
 
     // -------------------------
     // Viikkonäkymä
     // -------------------------
-
     const weekStart = new Date(now);
     const day = weekStart.getDay();
     const diff = (day === 0 ? -6 : 1) - day;
@@ -68,9 +86,13 @@ export function useDashboardData(employeeId?: string) {
 
     setWeekSummary({
       ...weekTime,
-      load: average(weekEntries, 'workload').toFixed(1),
-      stress1: average(weekEntries, 'stress1').toFixed(1),
-      stress2: average(weekEntries, 'stress2').toFixed(1),
+
+      // Keskiarvot viikon kirjauksista
+      avgLoad: average(weekEntries.map(e => e.workload)),
+      avgStress1: average(weekEntries.map(e => e.stress1)),
+      avgStress2: average(weekEntries.map(e => e.stress2)),
+
+      // Erotus tavoitteeseen (tunneissa)
       goalDiff: weekMinutes / 60 - weekEntries.length * DAILY_TARGET_HOURS,
     });
 
@@ -90,9 +112,13 @@ export function useDashboardData(employeeId?: string) {
 
     setMonthSummary({
       ...monthTime,
-      load: average(monthEntries, 'workload').toFixed(1),
-      stress1: average(monthEntries, 'stress1').toFixed(1),
-      stress2: average(monthEntries, 'stress2').toFixed(1),
+
+      // Keskiarvot viikon kirjauksista
+      avgLoad: average(monthEntries.map(e => e.workload)),
+      avgStress1: average(monthEntries.map(e => e.stress1)),
+      avgStress2: average(monthEntries.map(e => e.stress2)),
+
+      // Erotus tavoitteeseen (tunneissa)
       goalDiff: monthMinutes / 60 - monthEntries.length * DAILY_TARGET_HOURS,
     });
 
@@ -111,7 +137,11 @@ export function useDashboardData(employeeId?: string) {
 
     setTotalSummary({
       ...totalTime,
+
+      // Erotus tavoitteeseen (tunneissa)
       goalDiff: (totalMinutes - careerTargetMinutes) / 60,
+
+      // Tarvitaan UI:ssa vertailuun
       targetMinutes: careerTargetMinutes,
     });
 
@@ -123,5 +153,6 @@ export function useDashboardData(employeeId?: string) {
     weekSummary,
     monthSummary,
     totalSummary,
+    hasEntries,
   };
 }

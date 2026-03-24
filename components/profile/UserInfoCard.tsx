@@ -1,4 +1,4 @@
-// components/UserInfoCard.tsx
+// components/profile/UserInfoCard.tsx
 import { ProfileData } from '@/types/profile';
 import { Image, StyleSheet, Text, View } from 'react-native';
 

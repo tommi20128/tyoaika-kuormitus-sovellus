@@ -156,7 +156,7 @@ export default function AddWorkPage() {
         </View>
 
         {/* Kuormitus- ja stressikysymykset */}
-        <Text style={styles.label}>Kuinka kuormittavana koit tämän työpäivän? (1–10)</Text>
+        <Text style={styles.label}>Kuinka kuormittavana koit tämän työpäivän? 1(kevyt) – 10 (todella raskas)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -164,7 +164,7 @@ export default function AddWorkPage() {
           onChangeText={(val) => setFormData({ ...formData, workload: val })}
         />
 
-        <Text style={styles.label}>Oliko sinulla työpäivän aikana aikaa palautumiselle (1–10)</Text>
+        <Text style={styles.label}>Oliko sinulla työpäivän aikana aikaa palautumiselle 1(ei juurikaan) – 10(reilusti)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -172,7 +172,7 @@ export default function AddWorkPage() {
           onChangeText={(val) => setFormData({ ...formData, stress1: val })}
         />
 
-        <Text style={styles.label}>Koitko työsi merkitykselliseksi (1–10)</Text>
+        <Text style={styles.label}>Koitko työsi merkitykselliseksi 1(en ollenkaan) – 10 (todellakin)</Text>
         <TextInput
           style={styles.input}
           keyboardType="numeric"
@@ -181,7 +181,7 @@ export default function AddWorkPage() {
         />
 
         {/* Kommentti */}
-        <Text style={styles.label}>Kommentti</Text>
+        <Text style={styles.label}>Kommentti (vapaavalintainen)</Text>
         <TextInput
           style={[styles.textArea, styles.input]}
           multiline

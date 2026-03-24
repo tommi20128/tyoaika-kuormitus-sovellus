@@ -1,7 +1,6 @@
-//components/WorkEntryCard.tsx
+//components/cards/WorkEntryCard.tsx
 import { DailyWorkEntry } from '@/types/work';
 import { formatReverseFullDate } from '@/utils/dateUtils';
-import { calculateAverageStress } from '@/utils/stressUtils';
 import InfoCard from '../ui/InfoCard';
 import InfoRow from '../ui/InfoRow';
 
@@ -13,7 +12,6 @@ interface Props {
 // Tämä komponentti näyttää yhden työpäivän tiedot korttina. Käytetään sekä etusivulla että historiassa.
 
 export default function WorkEntryCard({ entry, showStress = true }: Props) {
-   const avgStress = calculateAverageStress(entry.stress1, entry.stress2);
 
   return (
     <InfoCard title={formatReverseFullDate(new Date(entry.date))}>
@@ -25,9 +23,8 @@ export default function WorkEntryCard({ entry, showStress = true }: Props) {
 
       {showStress && (
         <>
-          <InfoRow label="Stressi 1" value={`${entry.stress1}/10`} />
-          <InfoRow label="Stressi 2" value={`${entry.stress2}/10`} />
-          <InfoRow label="Stressi yht." value={`${avgStress.toFixed(1)}/10`} />
+          <InfoRow label="Palautuminen" value={`${entry.stress1}/10`} />
+          <InfoRow label="Merkityksellisyys" value={`${entry.stress2}/10`} />
         </>
       )}
 

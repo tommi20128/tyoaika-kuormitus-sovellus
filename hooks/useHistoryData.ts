@@ -27,38 +27,79 @@ export function useHistoryData(employeeId?: string) {
   
   const entries = useWorkEntries(employeeId);
 
-  const [weekOffset, setWeekOffset] = useState(0);
   const [monthOffset, setMonthOffset] = useState(0);
   const [view, setView] = useState<'week' | 'month'>('week');
+  const [selectedWeek, setSelectedWeek] = useState<{
+  week: number;
+  year: number;
+} | null>(null);
 
   const now = new Date();
 
   // -------------------------
-  // Viikkonäkymä
-  // -------------------------
-
-  const targetWeekDate = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate() + weekOffset * 7
-  );
-
-  const { monday, sunday } = getWeekRange(targetWeekDate);
+  // VIIKKONÄKYMÄ
+  // ------------------------
+  // jos ei ole valittu viikkoa → käytä nykyistä viikkoa
+  const activeWeek = selectedWeek ?? {
+    week: getISOWeekNumber(now),
+    year: now.getFullYear(),
+  };
 
   const weekEntries = entries
     .filter(e => {
       const d = new Date(e.date);
-      return d >= monday && d <= sunday;
+
+      return (
+        getISOWeekNumber(d) === activeWeek.week &&
+        d.getFullYear() === activeWeek.year
+      );
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  const weekNumber = getISOWeekNumber(targetWeekDate);
-  const weekYear = targetWeekDate.getFullYear();
+  // viikon alku/loppu labelia varten
+  const { monday, sunday } = getWeekRange(
+    new Date(activeWeek.year, 0, 1 + (activeWeek.week - 1) * 7)
+  );
+
+   // -------------------------
+  // NAVIGAATIO (viikko)
+  // -------------------------
+
+  const goToPreviousWeek = () => {
+    const date = new Date(monday);
+    date.setDate(date.getDate() - 7);
+
+    setSelectedWeek({
+      week: getISOWeekNumber(date),
+      year: date.getFullYear(),
+    });
+  };
+
+  const goToNextWeek = () => {
+    const date = new Date(monday);
+    date.setDate(date.getDate() + 7);
+
+    setSelectedWeek({
+      week: getISOWeekNumber(date),
+      year: date.getFullYear(),
+    });
+  };
 
   // -------------------------
-  // Kuukausinäkymä
+  // VALINTA KUUKAUDESTA
   // -------------------------
+  const selectWeek = (week: number) => {
+    setSelectedWeek({
+      week,
+      year: targetMonthDate.getFullYear(),
+    });
 
+    setView('week');
+  };
+
+  // -------------------------
+  // KUUKAUSINÄKYMÄ
+  // -------------------------
   const targetMonthDate = new Date(
     now.getFullYear(),
     now.getMonth() + monthOffset,
@@ -87,12 +128,14 @@ export function useHistoryData(employeeId?: string) {
     setView,
 
     // viikkonavigaatio
-    weekOffset,
-    setWeekOffset,
-    weekNumber,
-    weekYear,
+    selectedWeek,
+    selectWeek,
     monday,
     sunday,
+    weekNumber: activeWeek.week,
+    weekYear: activeWeek.year,
+    goToPreviousWeek,
+    goToNextWeek,
     isFutureWeek,
     weekEntries,
 

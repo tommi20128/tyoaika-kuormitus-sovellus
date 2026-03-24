@@ -25,7 +25,9 @@ export default function WeekSummaryList({ weeks, onSelectWeek }: WeekSummaryList
             >
               <Text>Viikko {week}</Text>
               <Text>{summary.hours} h {summary.minutes} min</Text>
-              <Text>Ka. kuormitus {summary.avgLoad}/10</Text>
+              <Text>Kuormitus (ka.) {summary.avgLoad}/10</Text>
+              <Text>Palautuminen (ka.) {summary.avgStress1}/10</Text>
+              <Text>Merkityksellisyys (ka.) {summary.avgStress2}/10</Text>
             </Pressable>
           );
         })}

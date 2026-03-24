@@ -7,46 +7,53 @@ import { getISOWeekNumber } from './dateUtils';
 // Käytetään mm. etusivun ja historiakorttien yhteenvetolaskuissa.
 // -------------------------
 
-// Laskee taulukon DailyWorkEntry-objektien totalMinutes-kenttien summan.
+// Laskee taulukon DailyWorkEntryn totalMinutes-kenttien summan.
 export const sumMinutes = (arr: DailyWorkEntry[]) =>
   arr.reduce((acc, e) => acc + e.totalMinutes, 0);
 
-// Laskee annettujen DailyWorkEntry-objektien keskiarvon annetulle numerokentälle.
-export const average = (
-  arr: DailyWorkEntry[],
-  key: keyof DailyWorkEntry
-) =>
-  arr.length
-    ? arr.reduce(
-       (acc, e) => acc + Number(e[key] ?? 0),
-      0
-    ) / arr.length
+// Laskee numeroarvojen keskiarvon
+export const average = (values: number[]) =>
+  values.length
+    ? values.reduce((acc, val) => acc + val, 0) / values.length
     : 0;
 
- // Laskee viikon yhteenvetotiedot (tunnit ja kuormitus)
+// Laskee keskiarvon suoraan entry-listasta tietylle kentälle
+export const avgFromEntries = (
+  entries: DailyWorkEntry[],
+  key: keyof DailyWorkEntry
+) =>
+  average(
+    entries.map(e => Number(e[key] ?? 0))
+  );
+
+// Laskee viikon yhteenvetotiedot (tunnit ja kuormitus)
 export const calculateWeekSummary = (arr: DailyWorkEntry[]) => {
-    const totalMinutes = sumMinutes(arr);
+  const totalMinutes = sumMinutes(arr);
 
-    const avgLoad = average(arr, "workload").toFixed(1);
-       return {
-      hours: Math.floor(totalMinutes / 60),
-      minutes: totalMinutes % 60,
-      avgLoad,
-    };
+  return {
+    hours: Math.floor(totalMinutes / 60),
+    minutes: totalMinutes % 60,
+
+    // 
+    avgLoad: average(arr.map(e => e.workload)),
+    avgStress1: average(arr.map(e => e.stress1)),
+    avgStress2: average(arr.map(e => e.stress2)),
   };
+};
 
-   // Viikon kirjausten ryhmittely kuukauden sisällä
+// Ryhmittelee kirjaukset viikottain
+// Käytetään Historia-sivun kuukausinäkymässä
 export const groupByWeek = (entries: DailyWorkEntry[]) => {
-    const weeks: Record<number, DailyWorkEntry[]> = {};
+  const weeks: Record<number, DailyWorkEntry[]> = {};
 
-    entries.forEach(entry => {
-      const week = getISOWeekNumber(new Date(entry.date));
+  entries.forEach(entry => {
+    const week = getISOWeekNumber(new Date(entry.date));
 
-      if (!weeks[week]) weeks[week] = [];
-      weeks[week].push(entry);
-    });
-    return weeks;
-  };
+    if (!weeks[week]) weeks[week] = [];
+    weeks[week].push(entry);
+  });
+  return weeks;
+};
 
 // -------------------------
 // Laskee koko työuran tavoiteminuutit
@@ -59,7 +66,7 @@ export const calculateCareerTargetMinutes = (
 ) => {
   if (!entries.length) return 0;
 
-  // Etsitään ensimmäinen kirjauspäivä
+  // Järjestetään vanhimmasta uusimpaan
   const sorted = [...entries].sort(
     (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
   );
@@ -74,7 +81,7 @@ export const calculateCareerTargetMinutes = (
   while (iterator <= today) {
     const dayOfWeek = iterator.getDay();
 
-    // 1–5 = ma–pe
+    // 1–5 = maanantai–perjantai
     if (dayOfWeek >= 1 && dayOfWeek <= 5) {
       workDaysCount++;
     }

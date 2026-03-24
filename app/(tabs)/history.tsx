@@ -1,13 +1,13 @@
 // app/(tabs)/history.tsx
 import { View, Text, StyleSheet } from 'react-native';
+import { formatWeekLabel } from '@/utils/dateUtils';
+import { groupByWeek } from '@/utils/workUtils';
 import { useHistoryData } from '@/hooks/useHistoryData';
 import PeriodNavigator from '@/components/history/PeriodNavigator';
 import ViewToggleButton from '@/components/history/ViewToggleButton';
 import WeekSummaryList from '@/components/history/WeekSummaryList';
 import WeekEntryList from '@/components/history/WeekEntryList';
 import EmptyCard from '@/components/cards/EmptyCard';
-import { formatWeekLabel } from '@/utils/dateUtils';
-import { groupByWeek } from '@/utils/workUtils';
 
 interface HistoryPageProps {
   employeeId?: string;
@@ -18,8 +18,6 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
 
   // Haetaan historia-data hookista
   const {
-    weekOffset,           // kuinka monta viikkoa taaksepäin mennään
-    setWeekOffset,        // funktio viikko-offsetin päivittämiseen
     monthOffset,          // kuinka monta kuukautta taaksepäin mennään
     setMonthOffset,       // funktio kuukausi-offsetin päivittämiseen
     weekEntries,          // kaikki kyseisen viikon kirjaukset
@@ -27,6 +25,10 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
     weekYear,             // nykyisen viikon vuosi
     monday,               // nykyisen viikon maanantai
     sunday,               // nykyisen viikon sunnuntai
+    goToPreviousWeek,
+    goToNextWeek,
+    selectWeek,
+    selectedWeek,
     view,                 // nykyinen näkymä ('week' tai 'month')
     setView,              // funktio näkymän vaihtamiseen
     monthLabel,           // nykyisen kuukauden label (esim. "Lokakuu 2024")
@@ -49,8 +51,8 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
       {/* Viikkonavigointi */}
       <PeriodNavigator
         label={formatWeekLabel(weekNumber, weekYear, monday, sunday)}
-        onPrev={() => setWeekOffset(weekOffset - 1)}
-        onNext={() => setWeekOffset(weekOffset + 1)}
+        onPrev={goToPreviousWeek}
+        onNext={goToNextWeek}
         disableNext={isFutureWeek(monday)}
       />
 
@@ -80,7 +82,7 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
           weeks={monthWeeks}
           onSelectWeek={(week) => {
             setView('week');
-            setWeekOffset(week - weekNumber); // setWeekOffset on viikkonäkymän liuku, 0 = tämä viikko
+            selectWeek(Number(week))
           }}
         />
       ) : (

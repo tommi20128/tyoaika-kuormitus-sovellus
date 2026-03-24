@@ -15,7 +15,7 @@ import {
   Modal,
   FlatList,
 } from "react-native";
-import { useSupervisors } from "@/hooks/useSupervisorData";
+import { useUsers } from "@/hooks/useUsers";
 
 type Role = "employee" | "supervisor";
 
@@ -36,7 +36,11 @@ export default function EditEmployee() {
   const [manager, setManager] = useState<Manager | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { supervisors } = useSupervisors();
+  const { users } = useUsers("all");
+
+  const supervisors = users.filter(
+    (u) => u.role === "supervisor"
+  );
 
   // -------------------------
   // Hae käyttäjä
@@ -55,7 +59,7 @@ export default function EditEmployee() {
         setTitle(data.title || "");
         setRole(data.role || "employee");
 
-        // 🔥 Hae manager olio
+        // Hae manager olio
         if (data.managerId) {
           const managerRef = doc(db, "users", data.managerId);
           const managerSnap = await getDoc(managerRef);
@@ -101,9 +105,9 @@ export default function EditEmployee() {
         manager: role === "employee"
           ? `${manager?.firstName} ${manager?.lastName}`
           : null,
-       managerId: role === "employee" && manager
-  ? manager.id
-  : null,
+        managerId: role === "employee" && manager
+          ? manager.id
+          : null,
       });
 
       Alert.alert("Tallennettu");
@@ -114,6 +118,11 @@ export default function EditEmployee() {
       Alert.alert("Virhe tallennuksessa");
     }
   };
+
+  // Peruuta muokkaus
+  const handleBack = () => {
+    router.back();
+  }
 
   // -------------------------
   // UI
@@ -182,6 +191,8 @@ export default function EditEmployee() {
       {renderManagerSelector()}
 
       <Button title="Tallenna muutokset" onPress={handleSave} />
+      <View style={{ height: 10 }} />
+      <Button title="Peruuta" onPress={() => router.back()} />
 
       {/* MODAL */}
       <Modal visible={modalVisible} transparent animationType="slide">
@@ -192,6 +203,10 @@ export default function EditEmployee() {
               keyExtractor={(item) => item.id}
               renderItem={renderManagerItem}
             />
+
+            {/* viiva viimeisen nimen jälkeen*/}
+            <View style={styles.divider} />
+
             <Button title="Peruuta" onPress={() => setModalVisible(false)} />
           </View>
         </View>
@@ -264,5 +279,10 @@ const styles = StyleSheet.create({
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ddd",
+    marginBottom: 12,
   },
 });

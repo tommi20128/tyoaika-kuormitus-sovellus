@@ -1,3 +1,4 @@
+// components/employee/EmployeeInfoCard.tsx
 import { User } from '@/types/user';
 import { StyleSheet, Text, View } from 'react-native';
 
