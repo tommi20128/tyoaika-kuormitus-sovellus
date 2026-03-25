@@ -36,7 +36,7 @@ export const useUsers = (mode: "mine" | "all" | "supervisors") => {
       q = query(q, where("role", "==", "supervisor"));
     }
 
-    // Reaaliaikainen Firestore-kuuntelu3
+    // Reaaliaikainen Firestore-kuuntelu
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {

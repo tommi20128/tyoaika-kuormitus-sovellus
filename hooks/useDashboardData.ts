@@ -7,6 +7,19 @@ import { average, sumMinutes, calculateCareerTargetMinutes } from '@/utils/workU
 import { minutesToHoursMinutes } from '@/utils/timeUtils';
 import { useWorkEntries } from '@/hooks/useWorkEntries';
 import { useEffect, useState } from 'react';
+import { getHolidayForDate } from '@/utils/holidayUtils';
+
+type DashboardEntry = Omit<DailyWorkEntry, 'id' | 'userId'> & {
+  type?: 'work' | 'holiday';
+  note?: string;
+};
+
+type SummaryEntry = {
+  totalMinutes: number;
+  workload: number;
+  stress1: number;
+  stress2: number;
+};
 
 const DAILY_TARGET_HOURS = 7.5; //Kovakoodattu päivän tavoitetyäaika
 
@@ -28,6 +41,7 @@ export function useDashboardData(employeeId?: string) {
   // Haetaan kaikki workEntries (oma tai valitun työntekijän)
   const entries = useWorkEntries(employeeId);
 
+  // Käyttäjän nimi (tällä hetkellä ei käytössä)
   const [firstName, setFirstName] = useState('');
 
   // Päivän yksittäinen kirjaus
@@ -38,14 +52,124 @@ export function useDashboardData(employeeId?: string) {
   const [monthSummary, setMonthSummary] = useState<WorkSummary | null>(null);
   const [totalSummary, setTotalSummary] = useState<WorkSummary | null>(null);
 
+  // Onko yhtään merkintää olemassa
   const [hasEntries, setHasEntries] = useState(false);
 
   // -------------------------
-  // Päivitetään dashboard kun entries muuttuu
+  // PYHÄPÄIVÄN LASKENTA
   // -------------------------
+
+  // Lisää pyhäpäivät viikkodataan
+  const enrichWithHolidays = (entries: DashboardEntry[]): DashboardEntry[] => {
+
+    const now = new Date();
+
+    const weekEntries = [...entries];
+
+    // Käydään viikon päivät läpi
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(now);
+
+      // Siirrytään viikon alkuun (maanantai)
+      const day = date.getDay();
+      const diff = (day === 0 ? -6 : 1) - day;
+
+      date.setDate(date.getDate() + diff + i);
+
+      // Tarkistetaan onko pyhäpäivä
+      const holiday = getHolidayForDate(date);
+
+      if (holiday) {
+
+        // Tarkistetaan ettei sama päivä jo ole entriesissä
+        const exists = weekEntries.find(
+          e => e.date === date.toISOString().split('T')[0]
+        );
+
+        // Jos ei ole → lisätään "virtuaalinen entry"
+        if (!exists) {
+          weekEntries.push({
+            date: date.toISOString().split('T')[0],
+            workload: 0,
+            stress1: 0,
+            stress2: 0,
+
+            // EI tallenneta, vain UI:lle
+            type: 'holiday',
+
+            // Kortti-merkintä
+            note: `Kortti: ${holiday.name}`,
+
+            // Lisätään työaika automaattisesti
+            totalMinutes: DAILY_TARGET_HOURS * 60
+          });
+        }
+      }
+    }
+    return weekEntries;
+  };
+
+
+  // -------------------------
+  // Viikon ja Kuukauden laskentafunktiot
+  // -------------------------
+
+  // Muodostaa viikon aloituspäivän (maanantai)
+  const getWeekStart = (date: Date) => {
+    const weekStart = new Date(date);
+    const day = weekStart.getDay();
+
+    // Siirretään maanantaihin
+    const diff = (day === 0 ? -6 : 1) - day;
+    weekStart.setDate(weekStart.getDate() + diff);
+
+    return weekStart;
+  };
+
+  // Suodattaa annetun viikon merkinnät
+  const getWeekEntries = (now: Date) => {
+    const weekStart = getWeekStart(now);
+
+    return entries.filter(e => {
+      const d = new Date(e.date);
+      return d >= weekStart && d <= now;
+    });
+  };
+
+  // Suodattaa kuukauden merkinnät
+  const getMonthEntries = (now: Date) => {
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    return entries.filter(e => {
+      const d = new Date(e.date);
+      return d >= monthStart && d <= now;
+    });
+  };
+
+  // Muodostaa summary-objektin
+  const buildSummary = (entries: SummaryEntry[]) => {
+    const totalMinutes = sumMinutes(entries as DailyWorkEntry[]);
+    const time = minutesToHoursMinutes(totalMinutes);
+
+    return {
+      ...time,
+
+      // Keskiarvot
+      avgLoad: average(entries.map(e => e.workload)),
+      avgStress1: average(entries.map(e => e.stress1)),
+      avgStress2: average(entries.map(e => e.stress2)),
+
+      // Erotus tavoitteeseen
+      goalDiff:
+        totalMinutes / 60 - entries.length * DAILY_TARGET_HOURS,
+    };
+  };
 
   useEffect(() => {
 
+    // -------------------------
+    // Jos ei dataa → tyhjennetään kaikki
+    // -------------------------
     if (!entries.length) {
     setHasEntries(false);
     setTodayEntry(null);
@@ -53,74 +177,39 @@ export function useDashboardData(employeeId?: string) {
     setMonthSummary(null);
     setTotalSummary(null);
     return;
-  }
+    }
 
-  setHasEntries(true);
+    setHasEntries(true);
 
     const now = new Date();
     
+    // -------------------------
+    // PÄIVÄ
+    // -------------------------
     // YYYY-MM-DD → sama formaatti kuin Firestoressa
     const todayId = now.toISOString().split('T')[0];
 
-    // -------------------------
-    // Päivän kirjaus
-    // -------------------------
     const todayData = entries.find(e => e.date === todayId) || null;
+
     setTodayEntry(todayData);
 
     // -------------------------
-    // Viikkonäkymä
+    // Viikkonäkymä + Pyhät
     // -------------------------
-    const weekStart = new Date(now);
-    const day = weekStart.getDay();
-    const diff = (day === 0 ? -6 : 1) - day;
-    weekStart.setDate(weekStart.getDate() + diff);
+    let weekEntries: DashboardEntry[] = getWeekEntries(now);
 
-    const weekEntries = entries.filter(e => {
-      const d = new Date(e.date);
-      return d >= weekStart && d <= now;
-    });
+    // Lisätään pyhäpäivät mukaan ennen laskentaa
+    weekEntries = enrichWithHolidays(weekEntries);
 
-    const weekMinutes = sumMinutes(weekEntries);
-    const weekTime = minutesToHoursMinutes(weekMinutes);
-
-    setWeekSummary({
-      ...weekTime,
-
-      // Keskiarvot viikon kirjauksista
-      avgLoad: average(weekEntries.map(e => e.workload)),
-      avgStress1: average(weekEntries.map(e => e.stress1)),
-      avgStress2: average(weekEntries.map(e => e.stress2)),
-
-      // Erotus tavoitteeseen (tunneissa)
-      goalDiff: weekMinutes / 60 - weekEntries.length * DAILY_TARGET_HOURS,
-    });
+    setWeekSummary(buildSummary(weekEntries));
 
     // -------------------------
     // Kuukausinäkymä
     // -------------------------
 
-    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEntries = getMonthEntries(now);
 
-    const monthEntries = entries.filter(e => {
-      const d = new Date(e.date);
-      return d >= monthStart && d <= now;
-    });
-
-    const monthMinutes = sumMinutes(monthEntries);
-    const monthTime = minutesToHoursMinutes(monthMinutes);
-
-    setMonthSummary({
-      ...monthTime,
-
-      // Keskiarvot viikon kirjauksista
-      avgLoad: average(monthEntries.map(e => e.workload)),
-      avgStress1: average(monthEntries.map(e => e.stress1)),
-      avgStress2: average(monthEntries.map(e => e.stress2)),
-
-      // Erotus tavoitteeseen (tunneissa)
-      goalDiff: monthMinutes / 60 - monthEntries.length * DAILY_TARGET_HOURS,
-    });
+    setMonthSummary(buildSummary(monthEntries));
 
     // -------------------------
     // Koko työura
@@ -128,10 +217,8 @@ export function useDashboardData(employeeId?: string) {
 
     const totalMinutes = sumMinutes(entries);
 
-    const careerTargetMinutes = calculateCareerTargetMinutes(
-      entries,
-      DAILY_TARGET_HOURS
-    );
+    const careerTargetMinutes = 
+      calculateCareerTargetMinutes(entries, DAILY_TARGET_HOURS);
 
     const totalTime = minutesToHoursMinutes(totalMinutes);
 
@@ -147,6 +234,9 @@ export function useDashboardData(employeeId?: string) {
 
   }, [entries]);
 
+  // -------------------------
+  // RETURN (UI:lle)
+  // -------------------------
   return {
     firstName,
     todayEntry,

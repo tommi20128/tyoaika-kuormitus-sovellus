@@ -3,8 +3,15 @@ import { DailyWorkEntry } from '@/types/work';
 import { ScrollView } from 'react-native';
 import WorkEntryCard from '../cards/WorkEntryCard';
 
+// 🔹 Sama tyyppi kuin dashboardissa
+type HistoryEntry = Omit<DailyWorkEntry, 'id' | 'userId'> & {
+  type?: 'work' | 'holiday';
+  note?: string;
+  id?: string; // optional → React keytä varten
+};
+
 interface Props {
-  entries: DailyWorkEntry[];
+  entries: HistoryEntry[];
 }
 
 // Tämä komponentti näyttää yhden viikon kaikki työpäivien kirjaukset listana. 
@@ -12,8 +19,11 @@ interface Props {
 export default function WeekEntryList({ entries }: Props) {
   return (
     <ScrollView>
-      {entries.map((entry) => (
-        <WorkEntryCard key={entry.id} entry={entry} />
+      {entries.map((entry, index) => (
+        <WorkEntryCard
+          key={entry.id ?? `${entry.date}-${index}`}
+          entry={entry as DailyWorkEntry}
+        />
       ))}
     </ScrollView>
   );

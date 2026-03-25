@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button:{
-     width: "100%",
+    width: "100%",
     height: 52,
     backgroundColor: "#1E3A8A", // tummansininen
     borderRadius: 10,

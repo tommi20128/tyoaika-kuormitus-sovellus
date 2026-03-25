@@ -1,7 +1,7 @@
 // app/(supervisor)/employee/[id].tsx
 import { router, useLocalSearchParams } from "expo-router";
 import HistoryPage from "@/app/(tabs)/history";
-import { Pressable, View, Text } from "react-native";
+import { Pressable, View, Text, StyleSheet } from "react-native";
 
 export default function EmployeeHistoryWrapper() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -15,8 +15,14 @@ export default function EmployeeHistoryWrapper() {
         onPress={() => router.back()}
         style={{ padding: 16, alignItems: "center" }}
       >
-        <Text>Takaisin</Text>
+        <Text style={styles.takaisin}>Takaisin</Text>
       </Pressable>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  takaisin:{
+    marginBottom: 12,
+  }
+})

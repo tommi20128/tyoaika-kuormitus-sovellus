@@ -8,6 +8,7 @@ import ViewToggleButton from '@/components/history/ViewToggleButton';
 import WeekSummaryList from '@/components/history/WeekSummaryList';
 import WeekEntryList from '@/components/history/WeekEntryList';
 import EmptyCard from '@/components/cards/EmptyCard';
+import { isFutureWeek, isFutureMonth } from '@/utils/dateUtils';
 
 interface HistoryPageProps {
   employeeId?: string;
@@ -28,14 +29,15 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
     goToPreviousWeek,
     goToNextWeek,
     selectWeek,
-    selectedWeek,
+    isCurrentWeekView,
+    isCurrentMonthView,
+    goToCurrentWeek,      // mennään nykyiseen viikkoon
+    goToCurrentMonth,     // mennään nykyiseen kuukauteen
     view,                 // nykyinen näkymä ('week' tai 'month')
     setView,              // funktio näkymän vaihtamiseen
     monthLabel,           // nykyisen kuukauden label (esim. "Lokakuu 2024")
     monthEntries,         // kaikki kyseisen kuukauden kirjaukset
-    isFutureWeek,         // onko kyseinen viikko tulevaisuudessa
     targetMonthDate,      // kuukausinäkymän vertailupvm (kuukauden ensimmäinen päivä)
-    isFutureMonth,        // onko kyseinen kuukausi tulevaisuudessa
   } = useHistoryData(employeeId);
 
   // Kuukausinäkymän data: ryhmitellään kuukauden kirjaukset viikoittain
@@ -56,6 +58,13 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
         disableNext={isFutureWeek(monday)}
       />
 
+      {/* Reset-nappi: nykyinen viikko */}
+      {!isCurrentWeekView && (
+      <Text style={styles.resetButton} onPress={goToCurrentWeek}>
+        Takaisin nykyiseen viikkoon
+      </Text>
+      )}
+
       {/* Viikkolista */}
       {weekEntries.length > 0 ? (
         <WeekEntryList entries={weekEntries} />
@@ -75,6 +84,13 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
         onNext={() => setMonthOffset(monthOffset + 1)}
         disableNext={isFutureMonth(targetMonthDate)}
       />
+
+      {/* Reset-nappi: näytetään vain jos EI olla nykyisessä kuukaudessa */}
+      {!isCurrentMonthView && (
+      <Text style={styles.resetButton} onPress={goToCurrentMonth}>
+        Takaisin nykyiseen kuukauteen
+      </Text>
+      )}
 
       {/* Viikkoyhteenvetolista */}
       {Object.keys(monthWeeks).length > 0 ? (
@@ -121,4 +137,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16
   },
+  resetButton: {
+    alignSelf: 'flex-start',
+    color: '#007AFF',
+    fontSize: 16,
+    fontWeight: '500',
+    paddingHorizontal: 10,
+    marginBottom: 12,
+    marginTop: 12,
+  }
 });

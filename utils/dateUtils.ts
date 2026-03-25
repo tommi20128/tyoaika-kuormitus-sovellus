@@ -3,7 +3,9 @@
 // Apufunktioita päivämäärien käsittelyyn
 // Näitä käytetään mm. historia- ja etusivun näkymissä viikko- ja kuukausidatan laskemiseen ja muotoiluun
 
+// --------------------------------------------------
 // Palauttaa ISO-viikon numeron annetulle päivämäärälle.
+// --------------------------------------------------
 export const getISOWeekNumber = (date: Date): number => {
   const temp = new Date(date.getTime());
   temp.setHours(0, 0, 0, 0);
@@ -21,7 +23,9 @@ export const getISOWeekNumber = (date: Date): number => {
   );
 };
 
+// --------------------------------------------------
 // Laskee annetun päivämäärän viikon aloitus- (maanantai) ja lopetuspäivän (sunnuntai).
+// --------------------------------------------------
 export const getWeekRange = (date: Date) => {
   const day = date.getDay();
   const diffToMonday = day === 0 ? -6 : 1 - day;
@@ -35,7 +39,33 @@ export const getWeekRange = (date: Date) => {
   return { monday, sunday };
 };
 
+// --------------------------------------------------
+// Tarkistaa, onko annettu viikko nykyinen viikko
+// --------------------------------------------------
+export const isCurrentWeek = (week: number, year: number) => {
+  const now = new Date();
+
+  return (
+    week === getISOWeekNumber(now) &&
+    year === now.getFullYear()
+  );
+};
+
+// --------------------------------------------------
+// Tarkistaa, onko annettu päivämäärä nykyisessä kuukaudessa
+// --------------------------------------------------
+export const isCurrentMonth = (date: Date) => {
+  const now = new Date();
+
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth()
+  );
+};
+
+// --------------------------------------------------
 // Tarkistaa, onko annettu viikko tulevaisuudessa suhteessa tämän viikon maanantaihin.
+// --------------------------------------------------
 export const isFutureWeek = (date: Date) => {
   const now = new Date();
   const thisWeekMonday = getWeekRange(now).monday;
@@ -44,7 +74,9 @@ export const isFutureWeek = (date: Date) => {
   return targetMonday > thisWeekMonday;
 };
 
+// --------------------------------------------------
 // Tarkistaa, onko annettu kuukausi tulevaisuudessa suhteessa nykyiseen kuukauteen.
+// --------------------------------------------------
 export const isFutureMonth = (date: Date) => {
   const now = new Date();
   const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -53,14 +85,18 @@ export const isFutureMonth = (date: Date) => {
   return targetMonth > thisMonth;
 };
 
+// --------------------------------------------------
 // Lyhyt päivämäärä esim. 14.10.
+// --------------------------------------------------
 export const formatShortDate = (date: Date) =>
   date.toLocaleDateString('fi-FI', {
     day: 'numeric',
     month: 'numeric',
   });
 
+// --------------------------------------------------
 // Muodostaa viikon labelin esim. "Viikko 42 (2024) 14.10. – 20.10."
+// --------------------------------------------------
 export const formatWeekLabel = (
   weekNumber: number,
   year: number,
@@ -68,7 +104,9 @@ export const formatWeekLabel = (
   sunday: Date
 ) => `Viikko ${weekNumber} (${year}) ${formatShortDate(monday)} – ${formatShortDate(sunday)}`;
 
+// --------------------------------------------------
 // Pitkä päivämäärä (esim. 19.2.2026 Maanantai)
+// --------------------------------------------------
 export const formatFullDate = (date: Date) => {
   const datePart = date.toLocaleDateString('fi-FI', {
     day: 'numeric',
@@ -81,7 +119,9 @@ export const formatFullDate = (date: Date) => {
   return `${datePart} ${capitalizedWeekday}`;
 };
 
+// --------------------------------------------------
 // pitkä päivämäärä viikonpäivä ensin (esim. Maanantai 19.2.2026)
+// --------------------------------------------------
 export const formatReverseFullDate = (date: Date) => {
   const datePart = date.toLocaleDateString('fi-FI', {
     day: 'numeric',

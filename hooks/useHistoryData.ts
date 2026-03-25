@@ -2,69 +2,155 @@
 
 import { useAuth } from '@/context/AuthContext';
 import { useWorkEntries } from '@/hooks/useWorkEntries';
+import { getHolidayForDate } from '@/utils/holidayUtils';
 import {
   formatMonthLabel,
   getISOWeekNumber,
   getWeekRange,
-  isFutureMonth,
-  isFutureWeek
+  isCurrentWeek,
+  isCurrentMonth,
 } from '@/utils/dateUtils';
 import { useState } from 'react';
 
 // --------------------------------------------------
 // Historia-sivun hookki
-// - tukee sekä omaa että toisen käyttäjän historiaa
+// Vastuut:
+// - hakee workEntries datan
+// - muodostaa viikko- ja kuukausinäkymän datan
+// - hallitsee navigaatiota (prev / next / reset)
 // --------------------------------------------------
-
 export function useHistoryData(employeeId?: string) {
 
   const { user } = useAuth();
 
-  // ------------------------------------------------
-  // Valitaan userId: jos employeeId annettu eli supervisor katsoo työntekijää
-  // ------------------------------------------------
-  const userId = employeeId ?? user?.uid;
-  
+  // Haetaan kaikki kirjaukset (oma tai supervisorin valitsema)
   const entries = useWorkEntries(employeeId);
 
-  const [monthOffset, setMonthOffset] = useState(0);
-  const [view, setView] = useState<'week' | 'month'>('week');
-  const [selectedWeek, setSelectedWeek] = useState<{
-  week: number;
-  year: number;
-} | null>(null);
-
+  // Nykyhetki (käytetään useissa laskennoissa)
   const now = new Date();
+
+  // Kuukausinavigaatio: 0 = nykyinen kuukausi, -1 = edellinen jne.
+  const [monthOffset, setMonthOffset] = useState(0);
+
+  // Näkymä: viikko tai kuukausi
+  const [view, setView] = useState<'week' | 'month'>('week');
+
+  // Valittu viikko (jos null → käytetään automaattisesti nykyistä viikkoa)
+  const [selectedWeek, setSelectedWeek] = useState<{
+    week: number;
+    year: number;
+  } | null>(null);
+
+  // -------------------------
+  // RESET (palautus nykyhetkeen)
+  // -------------------------
+
+  // Palauttaa viikkonäkymän nykyiseen viikkoon
+  const goToCurrentWeek = () => {
+    setSelectedWeek(null);
+  };
+
+  // Palauttaa kuukausinäkymän nykyiseen kuukauteen
+  const goToCurrentMonth = () => {
+    setMonthOffset(0);
+  };
 
   // -------------------------
   // VIIKKONÄKYMÄ
   // ------------------------
-  // jos ei ole valittu viikkoa → käytä nykyistä viikkoa
+  // Aktiivinen viikko:
+  // - jos käyttäjä on valinnut viikon → käytetään sitä
+  // - muuten → käytetään nykyistä viikkoa
   const activeWeek = selectedWeek ?? {
     week: getISOWeekNumber(now),
     year: now.getFullYear(),
   };
 
-  const weekEntries = entries
+  // Tarkistus: ollaanko nykyisessä viikossa (UI:ta varten)
+  const isCurrentWeekView = isCurrentWeek(
+    activeWeek.week,
+    activeWeek.year
+  );
+
+  // -------------------------
+  // PYHÄPÄIVÄT (viikkonäkymä)
+  // -------------------------
+  // Lisää "virtuaaliset" pyhäpäivät viikon dataan
+  const enrichWithHolidays = (entries: any[]) => {
+
+    const weekEntries = [...entries];
+
+    // Lasketaan viikon maanantai
+    const baseDate = new Date(
+      activeWeek.year,
+      0,
+      1 + (activeWeek.week - 1) * 7
+    );
+
+    // Käydään koko viikko läpi (ma–su)
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(baseDate);
+      date.setDate(date.getDate() + i);
+
+      const isoDate = date.toISOString().split('T')[0];
+
+      const holiday = getHolidayForDate(date);
+
+      if (holiday) {
+
+        // Estetään duplikaatit (jos user on jo tehnyt merkinnän)
+        const exists = weekEntries.find(e => e.date === isoDate);
+
+        if (!exists) {
+          weekEntries.push({
+            date: isoDate,
+            workload: 0,
+            stress1: 0,
+            stress2: 0,
+            totalMinutes: 7.5 * 60, // sama kuin DAILY_TARGET_HOURS
+
+            // UI:ta varten
+            type: 'holiday',
+            note: `Kortti: ${holiday.name}`,
+          });
+        }
+      }
+    }
+
+    return weekEntries;
+  };
+
+  // -------------------------
+  // Haetaan viikon kirjaukset
+  // -------------------------
+  let weekEntries = entries
     .filter(e => {
       const d = new Date(e.date);
 
+      // Suodatetaan vain valitun viikon päivät
       return (
         getISOWeekNumber(d) === activeWeek.week &&
         d.getFullYear() === activeWeek.year
       );
     })
+    // Uusimmat ensin
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  // viikon alku/loppu labelia varten
+  // LISÄTÄÄN PYHÄPÄIVÄT MUKAAN
+  weekEntries = enrichWithHolidays(weekEntries);
+
+  // -------------------------
+  // Viikon alku ja loppu (labelia varten)
+  // -------------------------
   const { monday, sunday } = getWeekRange(
     new Date(activeWeek.year, 0, 1 + (activeWeek.week - 1) * 7)
   );
 
-   // -------------------------
-  // NAVIGAATIO (viikko)
+  // -------------------------
+  // VIIKKONAVIGAATIO
   // -------------------------
 
+  // Siirry edelliseen viikkoon
   const goToPreviousWeek = () => {
     const date = new Date(monday);
     date.setDate(date.getDate() - 7);
@@ -75,6 +161,7 @@ export function useHistoryData(employeeId?: string) {
     });
   };
 
+  // Siirry seuraavaan viikkoon
   const goToNextWeek = () => {
     const date = new Date(monday);
     date.setDate(date.getDate() + 7);
@@ -86,32 +173,29 @@ export function useHistoryData(employeeId?: string) {
   };
 
   // -------------------------
-  // VALINTA KUUKAUDESTA
-  // -------------------------
-  const selectWeek = (week: number) => {
-    setSelectedWeek({
-      week,
-      year: targetMonthDate.getFullYear(),
-    });
-
-    setView('week');
-  };
-
-  // -------------------------
   // KUUKAUSINÄKYMÄ
   // -------------------------
+
+  // Kuukausi, jota tarkastellaan (offsetin perusteella)
   const targetMonthDate = new Date(
     now.getFullYear(),
     now.getMonth() + monthOffset,
     1
   );
 
+  // Tarkistus: ollaanko nykyisessä kuukaudessa
+  const isCurrentMonthView = isCurrentMonth(targetMonthDate);
+
+  // Kuukauden viimeinen päivä
   const monthEnd = new Date(
     targetMonthDate.getFullYear(),
     targetMonthDate.getMonth() + 1,
     0
   );
 
+  // -------------------------
+  // Haetaan kuukauden kirjaukset
+  // -------------------------
   const monthEntries = entries
     .filter(e => {
       const d = new Date(e.date);
@@ -119,33 +203,54 @@ export function useHistoryData(employeeId?: string) {
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
+  // Kuukauden label UI:ta varten
   const monthLabel = formatMonthLabel(targetMonthDate);
+
+  // -------------------------
+  // VIIKON VALINTA KUUKAUSINÄKYMÄSTÄ
+  // -------------------------
+  const selectWeek = (week: number) => {
+    setSelectedWeek({
+      week,
+      year: targetMonthDate.getFullYear(),
+    });
+
+    // Vaihdetaan automaattisesti viikkonäkymään
+    setView('week');
+  };
+
+
 
   return {
 
-    // view
+    // View
     view,
     setView,
 
-    // viikkonavigaatio
+    // Viikkodata
     selectedWeek,
     selectWeek,
+    isCurrentWeekView,
+    weekEntries,
     monday,
     sunday,
     weekNumber: activeWeek.week,
     weekYear: activeWeek.year,
+
+    // Viikkonavigaatio
     goToPreviousWeek,
     goToNextWeek,
-    isFutureWeek,
-    weekEntries,
+    goToCurrentWeek,
 
-    // kuukausinavigaatio
+    // Kuukausidata
     monthOffset,
     setMonthOffset,
-    monthLabel,
+    isCurrentMonthView,
     monthEntries,
+    monthLabel,
     targetMonthDate,
-    isFutureMonth,
 
+    // Kuukausinavigaatio
+    goToCurrentMonth,
   };
 }
