@@ -44,7 +44,7 @@ export default function IndexPage() {
         console.log({ userData })
 
         if (userData.role === "supervisor") {
-          router.replace("/(supervisor)/mainpage");
+          router.replace("/(supervisor)/(tabs)/mainpage");
 
         } else {
           router.replace("/(tabs)/frontpage");

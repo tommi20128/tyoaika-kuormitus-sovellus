@@ -1,4 +1,4 @@
-// components/PasswordChange.tsx
+// components/profile/PasswordChange.tsx
 import { View, TextInput, Pressable, Text, StyleSheet, Alert } from 'react-native';
 import { useState } from 'react';
 import {

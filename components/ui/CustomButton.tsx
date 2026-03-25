@@ -1,6 +1,6 @@
-// components/CustomButton.tsx
+// components/ui/CustomButton.tsx
 import React from 'react';
-import { Button, View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 type Props = {
   title: string;
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   button:{
-     width: "100%",
+    width: "100%",
     height: 52,
     backgroundColor: "#1E3A8A", // tummansininen
     borderRadius: 10,

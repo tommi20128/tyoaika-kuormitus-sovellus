@@ -1,4 +1,4 @@
-// components/ViewToggle.tsx
+// components/history/ViewToggle.tsx
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 
 interface Props {

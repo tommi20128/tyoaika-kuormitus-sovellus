@@ -1,11 +1,11 @@
-// app/(supervisor)/mainpage.tsx
+// app/(supervisor)/(tabs)/mainpage.tsx
 import { View, Text, StyleSheet, FlatList, Pressable, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
-import { useEmployeeData } from "@/hooks/useEmployeeData";
+import { useUsers } from "@/hooks/useUsers";
 
 export default function SupervisorHome() {
   const router = useRouter();
-  const { employees, loading } = useEmployeeData();
+  const { users, loading } = useUsers("mine");
 
   if (loading) {
     return (
@@ -20,7 +20,7 @@ export default function SupervisorHome() {
       <Text style={styles.title}>Työntekijät</Text>
 
       <FlatList
-        data={employees}
+        data={users}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable

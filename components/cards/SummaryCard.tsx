@@ -1,4 +1,5 @@
-// components/SummaryCard.tsx
+// components/cards/SummaryCard.tsx
+import { View } from 'react-native';
 import { WorkSummary } from '@/types/summary';
 import { formatHourDiff } from '@/utils/timeUtils';
 import InfoCard from '../ui/InfoCard';
@@ -10,11 +11,21 @@ interface Props {
   targetHours: number;
 }
 
-// Tämä komponentti näyttää yhteenvedon viikosta tai kuukaudesta. Käytetään etusivulla.
+// --------------------------------------------------
+// Näyttää yhteenvedon (viikko / kuukausi / koko ura)
+//
+// Näyttää:
+// - työtunnit vs tavoite
+// - tavoite-ero (edellä / jäljessä)
+// - keskiarvot (jos saatavilla)
+// --------------------------------------------------
 
 export default function SummaryCard({ title, summary, targetHours }: Props) {
+
+  // Muotoillaan tavoite-ero tunteina ja minuutteina
   const diff = formatHourDiff(summary.goalDiff);
 
+  // Näytettävä "tehdyt tunnit / tavoite"
   const targetTimeText = summary.targetMinutes
   ? `${summary.hours} h ${summary.minutes} min / ${Math.floor(summary.targetMinutes / 60)} h ${summary.targetMinutes % 60} min`
   : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`;
@@ -52,8 +63,12 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
         }
       />
 
-      {summary.load && (
-        <InfoRow label="Kuormitus (ka.)" value={`${summary.load}/10`} />
+      {summary.avgLoad !== undefined && (
+        <View>
+          <InfoRow label="Kuormitus (ka.)" value={`${summary.avgLoad}/10`} />
+          <InfoRow label="Palautuminen (ka.)" value={`${summary.avgStress1}/10`} />
+          <InfoRow label="Merkityksellisyys (ka.)" value={`${summary.avgStress2}/10`} />
+        </View>
       )}
     </InfoCard>
   );

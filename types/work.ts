@@ -14,6 +14,8 @@ export interface DailyWorkEntry {
   stress1: number;
   stress2: number;
   comment?: string;
+  type?: 'work' | 'holiday';
+  note?: string;
 }
 
 // Lomakedata, jota käytetään add-work-sivulla

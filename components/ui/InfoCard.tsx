@@ -1,4 +1,4 @@
-// components/InfoCard.tsx
+// components/ui/InfoCard.tsx
 import { View, Text, StyleSheet, ViewStyle } from "react-native";
 import { ReactNode } from "react";
 

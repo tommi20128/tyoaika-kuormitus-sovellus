@@ -4,6 +4,7 @@ import { useDashboardData } from '@/hooks/useDashboardData';
 import { useLocalSearchParams } from 'expo-router';
 import SummaryCard from '@/components/cards/SummaryCard';
 import WorkEntryCard from '@/components/cards/WorkEntryCard';
+import EmptyCard from '@/components/cards/EmptyCard';
 
 export default function HomePage() {
   const { id: employeeId } = useLocalSearchParams<{ id: string }>();
@@ -15,6 +16,7 @@ export default function HomePage() {
     weekSummary,      // Yhteenveto kuluvan viikon tunneista (tehdyt, tavoitteet, erotus)
     monthSummary,     // Yhteenveto kuluvan kuukauden tunneista (tehdyt, tavoitteet, erotus)
     totalSummary,     // Yhteenveto koko työuran tunneista (tehdyt, tavoitteet, erotus)
+    hasEntries,       // Katsotaan onko kirjauksia
   } = useDashboardData(employeeId);
 
   //Nämä arvot vaihdetaan oikeiksi, kun laskukaavat on tehty
@@ -26,42 +28,51 @@ export default function HomePage() {
     : 0;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.welcome}>
-        Tervetuloa {firstName}!
-      </Text>
+  <ScrollView contentContainerStyle={styles.container}>
+    <Text style={styles.welcome}>
+      Tervetuloa {firstName}!
+    </Text>
 
-      {/* Tämän päivän kirjaukset, jos niitä on. */}
-      {todayEntry && <WorkEntryCard entry={todayEntry} />}
+    {/* Empty state: Näytetään tämä, jos käyttäjällä ei ole vielä yhtään merkintää.
+      Tämä tekee UI:sta selkeämmän eikä jätä näkymää tyhjäksi. */}
+    {!hasEntries ? (
+      <EmptyCard message="Ei merkintöjä vielä" />
+    ) : (
+      <>
+        {/* Tämän päivän kirjaus: Näytetään vain, jos tältä päivältä löytyy merkintä.*/}
+        {todayEntry && <WorkEntryCard entry={todayEntry} />}
 
-      {/* Viikkonäkymä, joka näyttää kuluvan viikon yhteenvedon.*/}
-      {weekSummary && (
-        <SummaryCard
-          title="Tämä viikko"
-          summary={weekSummary}
-          targetHours={TARGET_WEEK_HOURS}
-        />
-      )}
+        {/* Viikkonäkymä: Näyttää kuluvan viikon yhteenvedon (tunnit, keskiarvot, tavoite-ero).*/}
+        {weekSummary && (
+          <SummaryCard
+            title="Tämä viikko"
+            summary={weekSummary}
+            targetHours={TARGET_WEEK_HOURS}
+          />
+        )}
 
-      {/* Kuukausinäkymä, joka näyttää kuluvan kuukauden yhteenvedon.*/}
-      {monthSummary && (
-        <SummaryCard
-          title="Tämä kuukausi"
-          summary={monthSummary}
-          targetHours={TARGET_MONTH_HOURS}
-        />
-      )}
+        {/*Kuukausinäkymä: Näyttää kuluvan kuukauden yhteenvedon.*/}
+        {monthSummary && (
+          <SummaryCard
+            title="Tämä kuukausi"
+            summary={monthSummary}
+            targetHours={TARGET_MONTH_HOURS}
+          />
+        )}
 
-      {/* Kokonaiskuva kaikista työuran aikana tehdyistä tunneista*/}
-      {totalSummary && (
-        <SummaryCard
-          title="Työtuntisaldo"
-          summary={totalSummary}
-          targetHours={careerTargetHours} // Oletetaan 5 työpäivää viikossa
-        />
-      )}
-    </ScrollView>
-  );
+         
+          {/*Kokonaisnäkymä (työura): Näyttää kaikki tehdyt tunnit suhteessa tavoitteeseen.*/}
+        {totalSummary && (
+          <SummaryCard
+            title="Työtuntisaldo"
+            summary={totalSummary}
+            targetHours={careerTargetHours}
+          />
+        )}
+      </>
+    )}
+  </ScrollView>
+);
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-// components/EmptyCard.tsx
+// components/cards/EmptyCard.tsx
 import { View, Text, StyleSheet } from 'react-native';
 
 // Yksinkertainen kortti, jota voidaan käyttää "Ei merkintöjä" -tms. 
