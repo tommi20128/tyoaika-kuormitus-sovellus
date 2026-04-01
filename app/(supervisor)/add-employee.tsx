@@ -207,7 +207,7 @@ export default function AddEmployee() {
         style={styles.input}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={{ color: manager ? "#000" : "#888" }}>
+        <Text style={{ color: manager ? "#000" : "#f8f5f5" }}>
           {manager ? `${manager.firstName} ${manager.lastName}` : "Valitse esimies"}
         </Text>
       </Pressable>
@@ -234,9 +234,16 @@ export default function AddEmployee() {
         {renderManagerSelector()}
 
         {/* Toiminnot */}
-        <Button title="Luo käyttäjä" onPress={handleRegister} />
+        <Pressable onPress={handleRegister} style={styles.button}>
+          <Text style={styles.buttonText}>Luo käyttäjä</Text>
+        </Pressable>
+
         <View style={{ height: 10 }} />
-        <Button title="Peruuta"  onPress={() => router.back()} />
+
+        <Pressable onPress={() => router.back()} style={styles.button}>
+          <Text style={styles.buttonText}>Peruuta</Text>
+        </Pressable>
+
 
         {/* MODAL: esimiehen valinta */}
         <Modal visible={modalVisible} transparent animationType="slide">
@@ -271,7 +278,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 24,
   },
   title: {
     fontSize: 24,
@@ -283,45 +290,45 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     borderColor: '#ccc',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 20,
+    paddingHorizontal: 16,
+    marginBottom: 24,
     justifyContent: 'center',
   }, // Tarviiko muokata?
   modalOverlay: {
     flex: 1,
     backgroundColor: "#00000099",
     justifyContent: "center",
-    padding: 20,
+    padding: 24,
   },
   modalContainer: {
     flex: 1,
     backgroundColor: "#00000099",
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
   },
   modalContent: {
     backgroundColor: "#fff",
     borderRadius: 12,
-    padding: 20,
+    padding: 24,
     maxHeight: "80%",
   },
   managerItem: {
-    padding: 12,
+    padding: 16,
     borderBottomColor: "#ddd",
     borderBottomWidth: 1,
   }, // Näitä arvoja pitää luultavasti vielä muokata
   roleContainer: {
     flexDirection: "row",
     width: "100%",
-    gap: 10,
-    marginBottom: 20,
+    gap: 16,
+    marginBottom: 24,
   },
   roleButton: {
     flex: 1,
-    padding: 12,
-    borderWidth: 1,
+    padding: 16,
+    borderWidth: 0.5,
     borderColor: "#ccc",
     borderRadius: 8,
     alignItems: "center",
@@ -334,6 +341,25 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: "#ddd",
-    marginBottom: 12,
+    marginBottom: 16,
+  },
+  button: {
+    width: "100%",
+    height: 42,
+    backgroundColor: "#1E3A8A", 
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 4,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

@@ -222,39 +222,48 @@ export default function EditEmployee() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 24,
     backgroundColor: "#fff",
   },
 
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 24,
   },
 
   input: {
     height: 50,
+     borderColor: "#D1D5DB",
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
-    justifyContent: "center",
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#000000",
   },
 
   roleContainer: {
     flexDirection: "row",
-    gap: 10,
-    marginBottom: 20,
+    gap: 16,
+    marginBottom: 24,
+
   },
 
   roleButton: {
     flex: 1,
-    padding: 12,
+    padding: 16,
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 8,
     alignItems: "center",
+    borderColor: "#D1D5DB",
+
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#000000",
   },
 
   selected: {
@@ -265,24 +274,29 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#00000099",
     justifyContent: "center",
-    padding: 20,
+    padding: 24,
   },
 
   modalContent: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 20,
+    borderRadius: 16,
+    padding: 24,
     maxHeight: "80%",
   },
 
   managerItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+    borderColor: "#D1D5DB",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#000000",
   },
   divider: {
     height: 1,
     backgroundColor: "#ddd",
-    marginBottom: 12,
+    marginBottom: 16,
   },
 });

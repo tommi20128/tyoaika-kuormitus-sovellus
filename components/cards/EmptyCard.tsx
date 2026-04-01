@@ -34,16 +34,16 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#ccc',
   },
   text: {
     fontSize: 16,
-    color: '#555',
+    color: '#000',
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 6,
+    marginBottom: 8,
   },
 });

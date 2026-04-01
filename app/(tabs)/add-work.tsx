@@ -200,24 +200,24 @@ export default function AddWorkPage() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingBottom: 40,
+    padding: 24,
+    paddingBottom: 46,
     backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 24,
   },
   label: {
     fontSize: 16,
-    marginBottom: 6,
+    marginBottom: 8,
     fontWeight: '500',
   },
   input: {
     backgroundColor: '#ffffff',
     borderRadius: 8,
-    padding: 12,
+    padding: 16,
     marginBottom: 16,
     fontSize: 16,
     borderColor: 'black',
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
   timeInput: {
     backgroundColor: '#ffffff',
     borderRadius: 8,
-    padding: 12,
+    padding: 16,
     fontSize: 16,
     width: '48%',
     borderColor: 'black',
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 16,
 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },

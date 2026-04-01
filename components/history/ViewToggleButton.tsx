@@ -1,4 +1,5 @@
 // components/history/ViewToggle.tsx
+import { terminate } from 'firebase/firestore';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 
 interface Props {
@@ -15,14 +16,14 @@ export default function ViewToggleButton({ value, onChange }: Props) {
         style={[styles.toggleButton, value === 'week' && styles.activeToggle]}
         onPress={() => onChange('week')}
       >
-        <Text>Viikko</Text>
+        <Text style={[styles.text, value === 'week' && styles.activeText]}>Viikko</Text>
       </Pressable>
 
       <Pressable
         style={[styles.toggleButton, value === 'month' && styles.activeToggle]}
         onPress={() => onChange('month')}
       >
-        <Text>Kuukausi</Text>
+        <Text style={[styles.text,value === 'month' && styles.activeText]}>Kuukausi </Text>
       </Pressable>
     </View>
   );
@@ -39,12 +40,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: 'center',
     borderRadius: 8,
-    marginHorizontal: 4,
+    marginHorizontal: 8,
     borderColor: "black",
     borderWidth: 0.2,
   },
   activeToggle: {
     backgroundColor: "#1E3A8A",
+    color: "#FFFFFF",
 
+  },
+  text:{
+  color: "black",
+  fontWeight:'bold'
+  },
+  activeText: {
+    color: "#FFFFFF",
+    fontWeight:'bold'
   }
 });

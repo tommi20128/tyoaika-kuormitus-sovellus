@@ -30,14 +30,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 6,
+    marginBottom: 8,
   },
   label: {
-    fontSize: 15,
-    color: "#555555",
+    fontSize: 16,
+    color: "#000",
   },
   value: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: "600",
   },
 });

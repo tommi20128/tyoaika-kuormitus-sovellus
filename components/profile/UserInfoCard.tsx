@@ -13,10 +13,6 @@ export const UserInfoCard = ({
 }: ProfileData) => {
   return (
     <View style={styles.card}>
-      <Image
-        source={{ uri: 'https://via.placeholder.com/100' }}
-        style={styles.avatar}
-      />
 
       <Text style={[styles.name, { textAlign: 'left' }]}>
         {firstName} {lastName}
@@ -41,7 +37,7 @@ export const UserInfoCard = ({
 
 const styles = StyleSheet.create({
   card: {
-    alignItems: 'center',
+
     marginBottom: 32,
   },
   avatar: {
@@ -53,22 +49,22 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 8,
     color: '#000',
     textAlign: 'left',
   },
   title: {
     fontSize: 16,
-    color: '#555',
-    marginBottom: 4,
+    color: '#000',
+    marginBottom: 8,
   },
   email: {
     fontSize: 16,
-    color: '#555',
+    color: '#000',
   },
   manager: {
     fontSize: 16,
-    color: '#555',
-    marginBottom: 4,
+    color: '#000',
+    marginBottom: 8,
   }
 });

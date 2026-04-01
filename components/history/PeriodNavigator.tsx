@@ -47,12 +47,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   button: {
-    padding: 10,
+    padding: 16,
     backgroundColor: "#1E3A8A",
-    borderRadius: 6,
+    borderRadius: 8,
   },
   label: {
     fontSize: 16,
