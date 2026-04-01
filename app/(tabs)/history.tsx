@@ -60,9 +60,9 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
 
       {/* Reset-nappi: nykyinen viikko */}
       {!isCurrentWeekView && (
-      <Text style={styles.resetButton} onPress={goToCurrentWeek}>
-        Takaisin nykyiseen viikkoon
-      </Text>
+        <Text style={styles.resetButton} onPress={goToCurrentWeek}>
+          Takaisin nykyiseen viikkoon
+        </Text>
       )}
 
       {/* Viikkolista */}
@@ -87,9 +87,9 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
 
       {/* Reset-nappi: näytetään vain jos EI olla nykyisessä kuukaudessa */}
       {!isCurrentMonthView && (
-      <Text style={styles.resetButton} onPress={goToCurrentMonth}>
-        Takaisin nykyiseen kuukauteen
-      </Text>
+        <Text style={styles.resetButton} onPress={goToCurrentMonth}>
+          Takaisin nykyiseen kuukauteen
+        </Text>
       )}
 
       {/* Viikkoyhteenvetolista */}

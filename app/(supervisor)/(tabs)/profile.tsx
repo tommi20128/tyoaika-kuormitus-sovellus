@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
       <PasswordChange />
 
-        <Pressable style={styles.button} onPress={handleLogout}>
+      <Pressable style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Kirjaudu ulos</Text>
       </Pressable>
     </View>
@@ -47,8 +47,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 20,
   },
-  button:{
-     width: "100%",
+  button: {
+    width: "100%",
     height: 42,
     backgroundColor: "#1E3A8A", // tummansininen
     borderRadius: 10,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 4,
   },
-  
+
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,

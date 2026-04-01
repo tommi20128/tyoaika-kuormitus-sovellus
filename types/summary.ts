@@ -6,7 +6,7 @@
 export interface WorkSummary {
   hours: number;
   minutes: number;
-  targetMinutes?: number;
+  targetMinutes?: number; // Tavoite minuuteissa, jos määritetty
 
   //Keskiarvot
   avgLoad?: number;       // Kuormitus

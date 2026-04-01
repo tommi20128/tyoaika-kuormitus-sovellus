@@ -3,6 +3,7 @@ import { db } from '@/Config';
 import { useAuth } from '@/context/AuthContext';
 import { WorkEntryFormData } from '@/types/work';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { getLocalDateString } from '@/utils/dateUtils';
 import { useEffect, useState } from 'react';
 import {
   Alert,
@@ -29,7 +30,7 @@ export default function AddWorkPage() {
     comment: '',
   });
 
-  const todayId = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+  const todayId = getLocalDateString(new Date());
 
   // Ladataan päivän kirjaus jos olemassa
   useEffect(() => {
@@ -90,7 +91,6 @@ export default function AddWorkPage() {
   // Tallennetaan Firestoreen
   const saveToFirestore = async (data: ReturnType<typeof parseFormData>) => {
     const totalMinutes = data.hours * 60 + data.minutes;
-    const averageStress = (data.stressLoad1 + data.stressLoad2) / 2;
 
     const docRef = doc(db, 'users', user!.uid, 'workEntries', todayId);
 
@@ -99,7 +99,6 @@ export default function AddWorkPage() {
       workload: data.load1,
       stress1: data.stressLoad1,
       stress2: data.stressLoad2,
-      //averageStress,
       comment: data.comment,
       date: todayId,
       createdAt: serverTimestamp(),
@@ -128,7 +127,7 @@ export default function AddWorkPage() {
       style={{ flex: 1, backgroundColor: '#FFFFFF' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // IOS: siirtää ylös, Android: scrollaa
       keyboardVerticalOffset={Platform.OS === 'ios' ? 120 : 0}
-     // säädä tarpeen mukaan
+    // säädä tarpeen mukaan
     >
       <ScrollView
         contentContainerStyle={{ padding: 20, paddingBottom: 150 }}
@@ -221,8 +220,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 16,
     fontSize: 16,
-    borderColor:'#Black',
-    borderWidth:0.2,
+    borderColor: 'black',
+    borderWidth: 0.2,
   },
   row: {
     flexDirection: 'row',
@@ -234,15 +233,15 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     width: '48%',
-    borderColor:'#Black',
-    borderWidth:0.2,
+    borderColor: 'black',
+    borderWidth: 0.2,
   },
   textArea: {
     height: 100,
     textAlignVertical: 'top',
   },
-button:{
-     width: "100%",
+  button: {
+    width: "100%",
     height: 42,
     backgroundColor: "#1E3A8A", // tummansininen
     borderRadius: 10,
@@ -256,7 +255,7 @@ button:{
     shadowRadius: 4,
     elevation: 4,
   },
-  
+
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,

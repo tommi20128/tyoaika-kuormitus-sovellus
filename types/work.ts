@@ -10,11 +10,11 @@ export interface DailyWorkEntry {
   userId: string;
   date: string;
   totalMinutes: number;
-  workload: number;
-  stress1: number;
-  stress2: number;
+  workload?: number;
+  stress1?: number;
+  stress2?: number;
   comment?: string;
-  type?: 'work' | 'holiday';
+  type?: 'work' | 'holiday' | 'empty';
   note?: string;
 }
 

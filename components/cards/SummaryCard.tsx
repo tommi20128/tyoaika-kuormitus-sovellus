@@ -26,14 +26,14 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
   const diff = formatHourDiff(summary.goalDiff);
 
   // Näytettävä "tehdyt tunnit / tavoite"
-  const targetTimeText = summary.targetMinutes
-  ? `${summary.hours} h ${summary.minutes} min / ${Math.floor(summary.targetMinutes / 60)} h ${summary.targetMinutes % 60} min`
-  : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`;
+  const targetTimeText = summary.targetMinutes !== undefined && summary.targetMinutes !== null
+    ? `${summary.hours} h ${summary.minutes} min / ${Math.floor(summary.targetMinutes / 60)} h ${summary.targetMinutes % 60} min`
+    : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`;
 
   return (
     <InfoCard title={title}>
       <InfoRow
-        label="Työtunnit"
+        label="Työtunnit:"
         /*Kumpi tapa on parempi? Tämä value vai alempana oleva. Voi kokeilla ja tehdään päätös sen jälkeen.
         value={
           summary.targetMinutes !== undefined
@@ -55,7 +55,7 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
       />
 
       <InfoRow
-        label="Tavoite"
+        label="Tavoite:"
         value={
           summary.goalDiff >= 0
             ? `Edellä +${diff.hours} h ${diff.minutes} min`
@@ -65,9 +65,9 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
 
       {summary.avgLoad !== undefined && (
         <View>
-          <InfoRow label="Kuormitus (ka.)" value={`${summary.avgLoad}/10`} />
-          <InfoRow label="Palautuminen (ka.)" value={`${summary.avgStress1}/10`} />
-          <InfoRow label="Merkityksellisyys (ka.)" value={`${summary.avgStress2}/10`} />
+          <InfoRow label="Kuormitus (ka.):" value={`${summary.avgLoad}/10`} />
+          <InfoRow label="Palautuminen (ka.):" value={`${summary.avgStress1}/10`} />
+          <InfoRow label="Merkityksellisyys (ka.):" value={`${summary.avgStress2}/10`} />
         </View>
       )}
     </InfoCard>

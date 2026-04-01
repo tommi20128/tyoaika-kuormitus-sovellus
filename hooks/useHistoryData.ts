@@ -6,9 +6,12 @@ import { getHolidayForDate } from '@/utils/holidayUtils';
 import {
   formatMonthLabel,
   getISOWeekNumber,
-  getWeekRange,
+  getISOWeekYear,
   isCurrentWeek,
   isCurrentMonth,
+  getLocalDateString,
+  getMondayOfISOWeek,
+  parseLocalDate,
 } from '@/utils/dateUtils';
 import { useState } from 'react';
 
@@ -61,10 +64,19 @@ export function useHistoryData(employeeId?: string) {
   // Aktiivinen viikko:
   // - jos käyttäjä on valinnut viikon → käytetään sitä
   // - muuten → käytetään nykyistä viikkoa
+  // HUOM: käytetään ISO-viikon vuotta (voi erota kalenterivuodesta!)
   const activeWeek = selectedWeek ?? {
     week: getISOWeekNumber(now),
-    year: now.getFullYear(),
+    year: getISOWeekYear(now),
   };
+
+  // -------------------------
+  // Viikon alku ja loppu (labelia varten)
+  // -------------------------
+  const monday = getMondayOfISOWeek(activeWeek.week, activeWeek.year);
+
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
 
   // Tarkistus: ollaanko nykyisessä viikossa (UI:ta varten)
   const isCurrentWeekView = isCurrentWeek(
@@ -80,19 +92,19 @@ export function useHistoryData(employeeId?: string) {
 
     const weekEntries = [...entries];
 
-    // Lasketaan viikon maanantai
-    const baseDate = new Date(
-      activeWeek.year,
-      0,
-      1 + (activeWeek.week - 1) * 7
-    );
+    if (!monday || isNaN(new Date(monday).getTime())) {
+      return weekEntries;
+    }
+
+    // Valitaan viikon maanantai
+    const baseDate = new Date(monday);
 
     // Käydään koko viikko läpi (ma–su)
     for (let i = 0; i < 7; i++) {
       const date = new Date(baseDate);
       date.setDate(date.getDate() + i);
 
-      const isoDate = date.toISOString().split('T')[0];
+      const isoDate = getLocalDateString(date);
 
       const holiday = getHolidayForDate(date);
 
@@ -111,7 +123,7 @@ export function useHistoryData(employeeId?: string) {
 
             // UI:ta varten
             type: 'holiday',
-            note: `Kortti: ${holiday.name}`,
+            note: `Pyhäpäivä: ${holiday.name}`,
           });
         }
       }
@@ -125,12 +137,12 @@ export function useHistoryData(employeeId?: string) {
   // -------------------------
   let weekEntries = entries
     .filter(e => {
-      const d = new Date(e.date);
+      const d = parseLocalDate(e.date);
 
       // Suodatetaan vain valitun viikon päivät
       return (
         getISOWeekNumber(d) === activeWeek.week &&
-        d.getFullYear() === activeWeek.year
+        getISOWeekYear(d) === activeWeek.year
       );
     })
     // Uusimmat ensin
@@ -139,12 +151,7 @@ export function useHistoryData(employeeId?: string) {
   // LISÄTÄÄN PYHÄPÄIVÄT MUKAAN
   weekEntries = enrichWithHolidays(weekEntries);
 
-  // -------------------------
-  // Viikon alku ja loppu (labelia varten)
-  // -------------------------
-  const { monday, sunday } = getWeekRange(
-    new Date(activeWeek.year, 0, 1 + (activeWeek.week - 1) * 7)
-  );
+
 
   // -------------------------
   // VIIKKONAVIGAATIO
@@ -198,7 +205,7 @@ export function useHistoryData(employeeId?: string) {
   // -------------------------
   const monthEntries = entries
     .filter(e => {
-      const d = new Date(e.date);
+      const d = parseLocalDate(e.date);
       return d >= targetMonthDate && d <= monthEnd;
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -210,9 +217,13 @@ export function useHistoryData(employeeId?: string) {
   // VIIKON VALINTA KUUKAUSINÄKYMÄSTÄ
   // -------------------------
   const selectWeek = (week: number) => {
+    const monday = getMondayOfISOWeek(week, targetMonthDate.getFullYear());
+
+    const isoYear = getISOWeekYear(monday);
+
     setSelectedWeek({
       week,
-      year: targetMonthDate.getFullYear(),
+      year: isoYear,
     });
 
     // Vaihdetaan automaattisesti viikkonäkymään

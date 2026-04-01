@@ -3,12 +3,34 @@
 // Apufunktioita päivämäärien käsittelyyn
 // Näitä käytetään mm. historia- ja etusivun näkymissä viikko- ja kuukausidatan laskemiseen ja muotoiluun
 
+// HUOM!
+// ISO-viikkojen laskenta perustuu siihen, että viikon vuosi määräytyy torstain mukaan.
+// Tästä syystä kalenterivuosi ja ISO-vuosi voivat erota toisistaan.
+
+export const getMondayOfISOWeek = (week: number, year: number): Date => {
+
+  // ISO viikkojen logiikka:
+  const simple = new Date(year, 0, 1 + (week - 1) * 7);
+
+  const dayOfWeek = simple.getDay();
+
+  const diff = simple.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+
+  return new Date(simple.setDate(diff));
+};
+
 // --------------------------------------------------
 // Palauttaa ISO-viikon numeron annetulle päivämäärälle.
 // --------------------------------------------------
 export const getISOWeekNumber = (date: Date): number => {
+
+  if (!date || isNaN(date.getTime())) {
+    date = new Date();
+  }
+
   const temp = new Date(date.getTime());
   temp.setHours(0, 0, 0, 0);
+
   temp.setDate(temp.getDate() + 3 - ((temp.getDay() + 6) % 7));
   const week1 = new Date(temp.getFullYear(), 0, 4);
 
@@ -24,15 +46,75 @@ export const getISOWeekNumber = (date: Date): number => {
 };
 
 // --------------------------------------------------
+// Palauttaa ISO-viikon VUODEN (voi olla eri kuin kalenterivuosi)
+// --------------------------------------------------
+export const getISOWeekYear = (date: Date): number => {
+
+  // Suojaus virheelliselle päivälle
+  if (!date || isNaN(date.getTime())) {
+    date = new Date();
+  }
+
+  const temp = new Date(date.getTime());
+  temp.setHours(0, 0, 0, 0);
+
+  temp.setDate(temp.getDate() + 3 - ((temp.getDay() + 6) % 7));
+
+  return temp.getFullYear();
+};
+
+// Palauttaa päivämäärän muodossa YYYY-MM-DD (local time)
+export const getLocalDateString = (date: Date): string => {
+
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return '';
+  }
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+};
+
+// --------------------------------------------------
+// PARSII YYYY-MM-DD STRINGIN TURVALLISESTI
+// EI käytä new Date(string) koska se voi aiheuttaa timezone-bugeja
+// --------------------------------------------------
+export const parseLocalDate = (dateString: string): Date => {
+
+  // Suojaus tyhjälle tai virheelliselle arvolle
+  if (!dateString) {
+    throw new Error('Invalid date string');
+  }
+
+  const [year, month, day] = dateString.split('-').map(Number);
+
+  // HUOM: month - 1 koska Date käyttää 0-indeksointia kuukausissa
+  return new Date(year, month - 1, day);
+};
+
+// --------------------------------------------------
 // Laskee annetun päivämäärän viikon aloitus- (maanantai) ja lopetuspäivän (sunnuntai).
 // --------------------------------------------------
 export const getWeekRange = (date: Date) => {
-  const day = date.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day;
 
-  const monday = new Date(date);
-  monday.setDate(date.getDate() + diffToMonday);
+  // Suojaus virheelliselle päivälle
+  if (!date || isNaN(date.getTime())) {
+    const now = new Date();
+    date = now;
+  }
 
+  // Kopioidaan päivämäärä ja asetetaan aika päivän alkuun
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+
+  // getDay(): 0 = sunnuntai, 1 = maanantai, ..., 6 = lauantai
+  const day = d.getDay();
+
+  // Lasketaan montako päivää pitää siirtää maanantaihin
+  const diffToMonday = (day + 6) % 7;
+
+  // Siirrytään maanantaihin
+  const monday = new Date(d);
+  monday.setDate(d.getDate() - diffToMonday);
+
+  // Sunnuntai = maanantai + 6 päivää
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
 
@@ -47,7 +129,7 @@ export const isCurrentWeek = (week: number, year: number) => {
 
   return (
     week === getISOWeekNumber(now) &&
-    year === now.getFullYear()
+    year === getISOWeekYear(now)
   );
 };
 
@@ -134,8 +216,10 @@ export const formatReverseFullDate = (date: Date) => {
   return `${capitalizedWeekday} ${datePart}`;
 };
 
+// -------------------------
 // Kuukauden nimi ja vuosi esim. "Lokakuu 2024"
 // Käytetään historia-sivun kuukausinäkymien labelinä
+// -------------------------
 export const formatMonthLabel = (date: Date) =>
   date.toLocaleDateString('fi-FI', {
     month: 'long',
