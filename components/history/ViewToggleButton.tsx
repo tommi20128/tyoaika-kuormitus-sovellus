@@ -40,11 +40,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     marginHorizontal: 4,
-    borderColor:"black",
+    borderColor: "black",
     borderWidth: 0.2,
   },
   activeToggle: {
     backgroundColor: "#1E3A8A",
-    
+
   }
 });

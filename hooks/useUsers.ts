@@ -29,7 +29,7 @@ export const useUsers = (mode: "mine" | "all" | "supervisors") => {
     // Haetaan käyttäjät joiden managerId = nykyinen käyttäjä
     if (mode === "mine") {
       q = query(q, where("managerId", "==", user.uid));
-    } 
+    }
 
     // Haetaan kaikki käyttäjät joilla rooli on supervisor
     if (mode === "supervisors") {
@@ -50,7 +50,7 @@ export const useUsers = (mode: "mine" | "all" | "supervisors") => {
             title: data.title || "",
             email: data.email || "",
             role: data.role || "employee",
-            managerId: data.managerId || null,
+            managerId: data.managerId || undefined,
           };
         });
 

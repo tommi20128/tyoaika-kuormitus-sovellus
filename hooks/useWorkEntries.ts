@@ -27,6 +27,7 @@ export function useWorkEntries(employeeId?: string) {
     if (!user && !employeeId) return;
 
     const uid = employeeId || user!.uid;
+    if (!uid) return;
 
     const entriesRef = collection(db, 'users', uid, 'workEntries');
 
@@ -53,7 +54,7 @@ export function useWorkEntries(employeeId?: string) {
 
       });
 
-      data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      data.sort((a, b) => b.date.localeCompare(a.date));
 
       setEntries(data);
 

@@ -28,51 +28,57 @@ export default function HomePage() {
     : 0;
 
   return (
-  <ScrollView contentContainerStyle={styles.container}>
-    <Text style={styles.welcome}>
-      Tervetuloa {firstName}!
-    </Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.welcome}>
+        Tervetuloa {firstName}!
+      </Text>
 
-    {/* Empty state: Näytetään tämä, jos käyttäjällä ei ole vielä yhtään merkintää.
+      {/* Empty state: Näytetään tämä, jos käyttäjällä ei ole vielä yhtään merkintää.
       Tämä tekee UI:sta selkeämmän eikä jätä näkymää tyhjäksi. */}
-    {!hasEntries ? (
-      <EmptyCard message="Ei merkintöjä vielä" />
-    ) : (
-      <>
-        {/* Tämän päivän kirjaus: Näytetään vain, jos tältä päivältä löytyy merkintä.*/}
-        {todayEntry && <WorkEntryCard entry={todayEntry} />}
+      {!hasEntries ? (
+        <EmptyCard message="Ei merkintöjä vielä" />
+      ) : (
+        <>
+          {/* Tämän päivän kirjaus: Näytetään vain, jos tältä päivältä löytyy merkintä.*/}
+          {todayEntry ? (
+            <WorkEntryCard entry={todayEntry} />
+          ) : (
+            <EmptyCard
+              title="Tämä päivä"
+              message="Tälle päivälle ei ole vielä kirjausta" />
+          )}
 
-        {/* Viikkonäkymä: Näyttää kuluvan viikon yhteenvedon (tunnit, keskiarvot, tavoite-ero).*/}
-        {weekSummary && (
-          <SummaryCard
-            title="Tämä viikko"
-            summary={weekSummary}
-            targetHours={TARGET_WEEK_HOURS}
-          />
-        )}
+          {/* Viikkonäkymä: Näyttää kuluvan viikon yhteenvedon (tunnit, keskiarvot, tavoite-ero).*/}
+          {weekSummary && (
+            <SummaryCard
+              title="Tämä viikko"
+              summary={weekSummary}
+              targetHours={TARGET_WEEK_HOURS}
+            />
+          )}
 
-        {/*Kuukausinäkymä: Näyttää kuluvan kuukauden yhteenvedon.*/}
-        {monthSummary && (
-          <SummaryCard
-            title="Tämä kuukausi"
-            summary={monthSummary}
-            targetHours={TARGET_MONTH_HOURS}
-          />
-        )}
+          {/*Kuukausinäkymä: Näyttää kuluvan kuukauden yhteenvedon.*/}
+          {monthSummary && (
+            <SummaryCard
+              title="Tämä kuukausi"
+              summary={monthSummary}
+              targetHours={TARGET_MONTH_HOURS}
+            />
+          )}
 
-         
+
           {/*Kokonaisnäkymä (työura): Näyttää kaikki tehdyt tunnit suhteessa tavoitteeseen.*/}
-        {totalSummary && (
-          <SummaryCard
-            title="Työtuntisaldo"
-            summary={totalSummary}
-            targetHours={careerTargetHours}
-          />
-        )}
-      </>
-    )}
-  </ScrollView>
-);
+          {totalSummary && (
+            <SummaryCard
+              title="Työtuntisaldo"
+              summary={totalSummary}
+              targetHours={careerTargetHours}
+            />
+          )}
+        </>
+      )}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({

@@ -6,13 +6,21 @@ import { View, Text, StyleSheet } from 'react-native';
 // kun tiettynä viikkona tai kuukautena ei ole kirjauksia.
 
 interface EmptyCardProps {
+  title?: string;   // Otsikko, joka näytetään kortissa
   message?: string; // Viesti, joka näytetään kortissa
 }
 
 // Yksinkertainen kortti, jota voidaan käyttää "Ei merkintöjä" -tms. näyttämiseen
-export default function EmptyCard({ message = 'Ei merkintöjä' }: EmptyCardProps) {
+export default function EmptyCard({
+  title,
+  message = 'Ei merkintöjä'
+}: EmptyCardProps) {
   return (
     <View style={styles.container}>
+      {title && (
+        <Text style={styles.title}>{title}</Text>
+      )}
+
       <Text style={styles.text}>{message}</Text>
     </View>
   );
@@ -32,5 +40,10 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: '#555',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 6,
   },
 });

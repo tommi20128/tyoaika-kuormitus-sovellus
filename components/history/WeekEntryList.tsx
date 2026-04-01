@@ -5,7 +5,7 @@ import WorkEntryCard from '../cards/WorkEntryCard';
 
 // 🔹 Sama tyyppi kuin dashboardissa
 type HistoryEntry = Omit<DailyWorkEntry, 'id' | 'userId'> & {
-  type?: 'work' | 'holiday';
+  type?: 'work' | 'holiday' | 'empty';
   note?: string;
   id?: string; // optional → React keytä varten
 };

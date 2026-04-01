@@ -22,60 +22,60 @@ export default function ProfilePage() {
     ]);
   };
 
-return (
-  <ScrollView
-    contentContainerStyle={styles.container}
-    showsVerticalScrollIndicator={false}
-  >
-
-<UserInfoCard
-  firstName={profile.firstName}
-  lastName={profile.lastName}
-  email={profile.email}
-  title={profile.title}
-  managerName={profile.managerName}
-/>
-
-    {/* Salasanan vaihto */}
-    <View style={styles.card}>
-      <PasswordChange />
-    </View>
-
-    {/* Kirjaudu ulos (Tarviiko tätä?) */}
-    <Pressable
-      style={({ pressed }) => [
-        styles.logoutButton,
-        pressed && { opacity: 0.85 }
-      ]}
-      onPress={handleLogout}
+  return (
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.logoutText}>Kirjaudu ulos</Text>
-    </Pressable>
 
-  </ScrollView>
-);
+      <UserInfoCard
+        firstName={profile.firstName}
+        lastName={profile.lastName}
+        email={profile.email}
+        title={profile.title}
+        managerName={profile.managerName}
+      />
+
+      {/* Salasanan vaihto */}
+      <View style={styles.card}>
+        <PasswordChange />
+      </View>
+
+      {/* Kirjaudu ulos (Tarviiko tätä?) */}
+      <Pressable
+        style={({ pressed }) => [
+          styles.logoutButton,
+          pressed && { opacity: 0.85 }
+        ]}
+        onPress={handleLogout}
+      >
+        <Text style={styles.logoutText}>Kirjaudu ulos</Text>
+      </Pressable>
+
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
 
   container: {
-  flexGrow: 1,
-  padding: 24,
-  backgroundColor: "#FFFFFF",
-},
+    flexGrow: 1,
+    padding: 24,
+    backgroundColor: "#FFFFFF",
+  },
 
-card: {
-  width: "100%",
-  backgroundColor: "#FFFFFF",
-  borderRadius: 14,
-  padding: 18,
-  marginBottom: 18,
-  shadowColor: "#000",
-  shadowOpacity: 0.12,
-  shadowRadius: 8,
-  shadowOffset: { width: 0, height: 4 },
-  elevation: 4,
-},
+  card: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    padding: 18,
+    marginBottom: 18,
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
+  },
 
   logoutButton: {
     height: 52,

@@ -1,3 +1,4 @@
+// utils/holidayUtils.ts
 import Holidays from 'date-holidays';
 
 // Luodaan yksi instanssi (ei joka kutsulla uudestaan)
@@ -6,25 +7,8 @@ const hd = new Holidays('FI');
 // -------------------------
 // Tarkistaa onko päivä pyhäpäivä
 // -------------------------
-/*export const getHolidayForDate = (date: Date) => {
-  const result = hd.isHoliday(date);
-
-  if (!result) return null;
-
-  // palautetaan ensimmäinen
-  return result[0];
-};*/
-
 export const getHolidayForDate = (date: Date) => {
 
-  // 🧪 TESTI: pakotetaan yksi päivä pyhäksi
-  const iso = date.toISOString().split('T')[0];
-
-  if (iso === '2026-03-25') {
-    return { name: 'TESTIPYHÄ' };
-  }
-
-  // Normaali logiikka
   const result = hd.isHoliday(date);
 
   if (!result) return null;
@@ -56,5 +40,5 @@ export const getHolidayEntryNote = (date: Date): string | null => {
 
   if (!holiday) return null;
 
-  return `Kortti: ${holiday.name}`;
+  return `Pyhäpäivä: ${holiday.name}`;
 };

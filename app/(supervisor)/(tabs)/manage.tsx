@@ -231,18 +231,18 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   toggleContainer: {
-  flexDirection: "row",
-  marginBottom: 16,
-  gap: 10,
-},
+    flexDirection: "row",
+    marginBottom: 16,
+    gap: 10,
+  },
 
-toggleButton: {
-  padding: 10,
-  borderRadius: 8,
-  backgroundColor: "#E5E7EB",
-},
+  toggleButton: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: "#E5E7EB",
+  },
 
-active: {
-  backgroundColor: "#1E3A8A",
-},
+  active: {
+    backgroundColor: "#1E3A8A",
+  },
 });

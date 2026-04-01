@@ -8,7 +8,7 @@ export default function EmployeeHistoryWrapper() {
 
   // Välitetään employeeId propsina HistoryPage:lle
   return (
-  <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <HistoryPage employeeId={id} />
 
       <Pressable
@@ -22,7 +22,7 @@ export default function EmployeeHistoryWrapper() {
 }
 
 const styles = StyleSheet.create({
-  takaisin:{
+  takaisin: {
     marginBottom: 12,
   }
 })

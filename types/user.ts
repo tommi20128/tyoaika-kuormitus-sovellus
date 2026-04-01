@@ -1,8 +1,6 @@
 // types/user.ts
 
-export type UserRole =
-    | "employee"
-    | "supervisor";
+export type UserRole = "employee" | "supervisor";
 
 export type UserId = string;
 
