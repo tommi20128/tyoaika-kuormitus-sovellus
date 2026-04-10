@@ -34,24 +34,18 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 8,
     color: '#000',
     textAlign: 'left',       // vasen tasaus
   },
 
   title: {
     fontSize: 16,
-    color: '#555',
-    marginBottom: 4,
+    color: '#000',
+    marginBottom: 8,
     textAlign: 'left',       // vasen tasaus
   },
 
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 16,
-  },
 });

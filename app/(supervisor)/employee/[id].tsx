@@ -23,6 +23,6 @@ export default function EmployeeHistoryWrapper() {
 
 const styles = StyleSheet.create({
   takaisin: {
-    marginBottom: 12,
+    marginBottom: 16,
   }
 })

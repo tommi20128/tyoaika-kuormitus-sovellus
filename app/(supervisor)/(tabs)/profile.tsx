@@ -30,11 +30,12 @@ export default function ProfilePage() {
         title={profile.title}
       />
 
-      <PasswordChange />
-
-      <Pressable style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Kirjaudu ulos</Text>
-      </Pressable>
+            {/* Salasanan vaihto */}
+            <View style={styles.card}>
+              <PasswordChange />
+            </View>
+      
+         
     </View>
   );
 }
@@ -42,22 +43,22 @@ export default function ProfilePage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    padding: 20,
+    padding: 24,
+        width: "100%",
+   
   },
   button: {
     width: "100%",
     height: 42,
-    backgroundColor: "#1E3A8A", // tummansininen
+    backgroundColor: "#1E3A8A", 
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
-    shadowRadius: 4,
+    shadowRadius: 1,
     elevation: 4,
   },
 
@@ -65,5 +66,17 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+   card: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 4,
   },
 });

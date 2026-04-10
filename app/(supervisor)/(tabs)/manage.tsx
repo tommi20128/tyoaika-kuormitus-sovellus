@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     marginBottom: 24,
     color: "#000000",
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     borderColor: "#D1D5DB",
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 14,
-    marginBottom: 12,
+    paddingHorizontal: 16,
+    marginBottom: 16,
     backgroundColor: "#FFFFFF",
     fontSize: 16,
     color: "#000000",
@@ -203,15 +203,15 @@ const styles = StyleSheet.create({
   },
 
   role: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#1E3A8A",
-    marginTop: 2,
+    marginTop: 8,
   },
 
   deleteButton: {
     backgroundColor: "#1E3A8A",
     paddingVertical: 6,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     borderRadius: 8,
   },
 
@@ -221,8 +221,8 @@ const styles = StyleSheet.create({
   },
   editButton: {
     backgroundColor: "#10B981",
-    paddingVertical: 6,
-    paddingHorizontal: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
     borderRadius: 8,
 
   },

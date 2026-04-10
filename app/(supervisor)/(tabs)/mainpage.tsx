@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
     marginBottom: 24,
     color: "#000000",
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: "#FFFFFF",
-    padding: 18,
-    borderRadius: 14,
+    padding: 16,
+    borderRadius: 10,
     marginBottom: 16,
 
     shadowColor: "#000",
@@ -70,15 +70,15 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
     color: "#000000",
   },
 
   role: {
-    fontSize: 14,
+    fontSize: 16,
     color: "#1E3A8A", // tummansininen korostus
-    marginTop: 4,
+    marginTop: 8,
     fontWeight: "500",
   },
 });

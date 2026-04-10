@@ -41,17 +41,6 @@ export default function ProfilePage() {
         <PasswordChange />
       </View>
 
-      {/* Kirjaudu ulos (Tarviiko tätä?) */}
-      <Pressable
-        style={({ pressed }) => [
-          styles.logoutButton,
-          pressed && { opacity: 0.85 }
-        ]}
-        onPress={handleLogout}
-      >
-        <Text style={styles.logoutText}>Kirjaudu ulos</Text>
-      </Pressable>
-
     </ScrollView>
   );
 }
@@ -68,28 +57,15 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#FFFFFF",
     borderRadius: 14,
-    padding: 18,
-    marginBottom: 18,
+    padding: 16,
+    marginBottom: 16,
     shadowColor: "#000",
     shadowOpacity: 0.12,
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
-  },
+    color: "black",
 
-  logoutButton: {
-    height: 52,
-    backgroundColor: "#DC2626",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-    elevation: 4,
   },
 
   logoutText: {

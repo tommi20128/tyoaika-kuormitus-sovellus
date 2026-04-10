@@ -130,10 +130,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    padding: 20
+    padding: 24
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16
   },
@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     fontSize: 16,
     fontWeight: '500',
-    paddingHorizontal: 10,
-    marginBottom: 12,
-    marginTop: 12,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+    marginTop: 16,
   }
 });
