@@ -7,7 +7,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { useState } from "react";
+import { act, useState } from "react";
 import { router } from "expo-router";
 import { useUsers } from "@/hooks/useUsers";
 import { doc, deleteDoc, collection, getDocs } from "firebase/firestore";
@@ -76,14 +76,18 @@ export default function ManageEmployees() {
           style={[styles.toggleButton, mode === "mine" && styles.active]}
           onPress={() => setMode("mine")}
         >
-          <Text>Omat alaiset</Text>
+          <Text style={mode === "mine" && styles.activeText}>
+            Omat alaiset
+            </Text>
         </Pressable>
 
         <Pressable
           style={[styles.toggleButton, mode === "all" && styles.active]}
           onPress={() => setMode("all")}
         >
-          <Text>Kaikki</Text>
+          <Text style={mode === "all" && styles.activeText}>
+            Kaikki
+            </Text>
         </Pressable>
       </View>
 
@@ -244,5 +248,8 @@ const styles = StyleSheet.create({
 
   active: {
     backgroundColor: "#1E3A8A",
+  },
+  activeText: {
+    color: "#fff",
   },
 });

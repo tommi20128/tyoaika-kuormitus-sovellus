@@ -34,23 +34,6 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
     <InfoCard title={title}>
       <InfoRow
         label="Työtunnit:"
-        /*Kumpi tapa on parempi? Tämä value vai alempana oleva. Voi kokeilla ja tehdään päätös sen jälkeen.
-        value={
-          summary.targetMinutes !== undefined
-            ? `${summary.hours} h ${summary.minutes} min / ${(summary.targetMinutes / 60).toFixed(1)} h`
-            : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`
-        }
-
-          summary.targetMinutes !== undefined
-            ? (() => {
-              const targetHours = Math.floor(summary.targetMinutes / 60);
-              const targetMinutes = summary.targetMinutes % 60;
-
-              return `${summary.hours} h ${summary.minutes} min / ${targetHours} h ${targetMinutes} min`;
-            })()
-            : `${summary.hours} h ${summary.minutes} min / ${targetHours} h`
-        
-        */
         value={targetTimeText}
       />
 
@@ -65,9 +48,9 @@ export default function SummaryCard({ title, summary, targetHours }: Props) {
 
       {summary.avgLoad !== undefined && (
         <View>
-          <InfoRow label="Kuormitus (ka.):" value={`${summary.avgLoad}/10`} />
-          <InfoRow label="Palautuminen (ka.):" value={`${summary.avgStress1}/10`} />
-          <InfoRow label="Merkityksellisyys (ka.):" value={`${summary.avgStress2}/10`} />
+          <InfoRow label="Kuormitus (ka.):" value={summary.avgLoad !== undefined ? `${summary.avgLoad.toFixed(1)}/10` : "0/10"} />
+          <InfoRow label="Palautuminen (ka.):" value={summary.avgStress1 !== undefined ? `${summary.avgStress1.toFixed(1)}/10` : "0/10"} />
+          <InfoRow label="Merkityksellisyys (ka.):" value={summary.avgStress2 !== undefined ? `${summary.avgStress2.toFixed(1)}/10` : "0/10"} />
         </View>
       )}
     </InfoCard>

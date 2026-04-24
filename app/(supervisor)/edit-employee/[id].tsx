@@ -146,7 +146,9 @@ export default function EditEmployee() {
         style={[styles.roleButton, role === "employee" && styles.selected]}
         onPress={() => setRole("employee")}
       >
-        <Text>Employee</Text>
+        <Text style={role === "employee" && styles.activeText}>
+          Työntekijä
+          </Text>
       </Pressable>
 
       <Pressable
@@ -156,7 +158,9 @@ export default function EditEmployee() {
           setManager(null);
         }}
       >
-        <Text>Supervisor</Text>
+        <Text style={role === "supervisor" && styles.activeText}>
+          Esihenkilö
+          </Text>
       </Pressable>
     </View>
   );
@@ -169,7 +173,7 @@ export default function EditEmployee() {
         style={styles.input}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={{ color: manager ? "#000" : "#888" }}>
+        <Text style={{ color: "#000"}}>
           {manager
             ? `${manager.firstName} ${manager.lastName}`
             : "Valitse esimies"}
@@ -233,8 +237,9 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    width: '100%',
     height: 50,
-     borderColor: "#D1D5DB",
+    borderColor: "#D1D5DB",
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 14,
@@ -242,6 +247,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     fontSize: 16,
     color: "#000000",
+    justifyContent: 'center',
   },
 
   roleContainer: {
@@ -298,5 +304,8 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#ddd",
     marginBottom: 16,
+  },
+  activeText: {
+    color: "#fff",
   },
 });
