@@ -177,7 +177,9 @@ export default function AddEmployee() {
           setRole("employee");
         }}
       >
-        <Text>Employee</Text>
+        <Text style={role === "employee" && styles.activeText}>
+          Työntekijä
+        </Text>
       </Pressable>
 
       {/* Supervisor */}
@@ -191,7 +193,9 @@ export default function AddEmployee() {
           setManager(null);
         }}
       >
-        <Text>Supervisor</Text>
+        <Text style={role === "supervisor" && styles.activeText}>
+        Esihenkilö
+        </Text>
       </Pressable>
     </View>
   );
@@ -207,7 +211,7 @@ export default function AddEmployee() {
         style={styles.input}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={{ color: manager ? "#000" : "#f8f5f5" }}>
+        <Text style={{ color: "#000"}}>
           {manager ? `${manager.firstName} ${manager.lastName}` : "Valitse esimies"}
         </Text>
       </Pressable>
@@ -289,12 +293,14 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     height: 50,
-    borderColor: '#ccc',
-    borderWidth: 0.5,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    marginBottom: 24,
+    borderColor: '#D1D5DB',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
     justifyContent: 'center',
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
   }, // Tarviiko muokata?
   modalOverlay: {
     flex: 1,
@@ -315,9 +321,14 @@ const styles = StyleSheet.create({
     maxHeight: "80%",
   },
   managerItem: {
-    padding: 16,
-    borderBottomColor: "#ddd",
-    borderBottomWidth: 1,
+    borderColor: "#D1D5DB",
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginBottom: 16,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#000000",
   }, // Näitä arvoja pitää luultavasti vielä muokata
   roleContainer: {
     flexDirection: "row",
@@ -361,5 +372,8 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  activeText: {
+    color: "#fff",
   },
 });
