@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable } from "react-native";
+import { Pressable, Text } from "react-native";
 import { router } from "expo-router";
 
 export default function TabsLayout() {
@@ -18,6 +18,7 @@ export default function TabsLayout() {
             style={{ marginRight: 16 }}
           >
             <Ionicons name="log-out-outline" size={38} color="#1E3A8A" />
+            <Text style={{ color: '#1E3A8A', fontSize: 12 }}>Kirjaudu ulos</Text>
           </Pressable>
         )
       }}

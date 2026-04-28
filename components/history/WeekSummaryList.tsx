@@ -73,9 +73,17 @@ export default function WeekSummaryList({ weeks, onSelectWeek }: WeekSummaryList
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#ffffff",
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 16,
+    shadowColor: "#000000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    elevation: 3,
   },
 })

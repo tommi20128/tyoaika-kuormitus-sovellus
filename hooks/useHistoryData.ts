@@ -87,7 +87,7 @@ export function useHistoryData(employeeId?: string) {
   // -------------------------
   // PYHÄPÄIVÄT (viikkonäkymä)
   // -------------------------
-  // Lisää "virtuaaliset" pyhäpäivät viikon dataan
+  // Lisää pyhäpäivät viikon dataan
   const enrichWithHolidays = (entries: any[]) => {
 
     const weekEntries = [...entries];

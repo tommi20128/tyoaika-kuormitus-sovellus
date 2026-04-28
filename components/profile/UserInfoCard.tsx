@@ -1,6 +1,6 @@
 // components/profile/UserInfoCard.tsx
 import { ProfileData } from '@/types/profile';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 // Komponentti käyttäjätietojen näyttämiseen profiilisivulla
 
@@ -19,11 +19,11 @@ export const UserInfoCard = ({
       </Text>
 
       <Text style={styles.title}>
-        {title}
+        Titteli: {title}
       </Text>
 
       <Text style={styles.email}>
-        {email}
+        Sähköpostiosoite: {email}
       </Text>
 
       {manager && (
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 16,
     color: '#000',
+    marginBottom: 8,
   },
   manager: {
     fontSize: 16,

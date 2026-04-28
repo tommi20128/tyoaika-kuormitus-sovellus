@@ -1,4 +1,5 @@
 //tests/hooks/useHistoryData.test.ts
+
 // Mockit ENSIN
 jest.mock('@/hooks/useWorkEntries', () => ({
   useWorkEntries: jest.fn(),
@@ -107,8 +108,6 @@ it('valitsee viikon ja vaihtaa view weekiksi', () => {
   expect(result.current.view).toBe('week');
   expect(result.current.selectedWeek?.week).toBe(5);
 });
-
-
 
 it('lisää pyhäpäivän jos ei entryä', () => {
   (useWorkEntries as jest.Mock).mockReturnValue([]);
