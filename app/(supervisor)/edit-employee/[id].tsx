@@ -14,6 +14,9 @@ import {
   Pressable,
   Modal,
   FlatList,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useUsers } from "@/hooks/useUsers";
 
@@ -119,11 +122,6 @@ export default function EditEmployee() {
     }
   };
 
-  // Peruuta muokkaus
-  const handleBack = () => {
-    router.back();
-  }
-
   // -------------------------
   // UI
   // -------------------------
@@ -148,7 +146,7 @@ export default function EditEmployee() {
       >
         <Text style={role === "employee" && styles.activeText}>
           Työntekijä
-          </Text>
+        </Text>
       </Pressable>
 
       <Pressable
@@ -160,7 +158,7 @@ export default function EditEmployee() {
       >
         <Text style={role === "supervisor" && styles.activeText}>
           Esihenkilö
-          </Text>
+        </Text>
       </Pressable>
     </View>
   );
@@ -173,7 +171,7 @@ export default function EditEmployee() {
         style={styles.input}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={{ color: "#000"}}>
+        <Text style={{ color: "#000" }}>
           {manager
             ? `${manager.firstName} ${manager.lastName}`
             : "Valitse esimies"}
@@ -183,39 +181,44 @@ export default function EditEmployee() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Muokkaa työntekijää</Text>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.title}>Muokkaa työntekijää</Text>
 
-      <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder="Etunimi" />
-      <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder="Sukunimi" />
-      <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Sähköposti" />
-      <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Titteli" />
+        <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder="Etunimi" />
+        <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder="Sukunimi" />
+        <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Sähköposti" />
+        <TextInput style={styles.input} value={title} onChangeText={setTitle} placeholder="Titteli" />
 
-      {renderRoleSelector()}
-      {renderManagerSelector()}
+        {renderRoleSelector()}
+        {renderManagerSelector()}
 
-      <Button title="Tallenna muutokset" onPress={handleSave} />
-      <View style={{ height: 10 }} />
-      <Button title="Peruuta" onPress={() => router.back()} />
+        <Button title="Tallenna muutokset" onPress={handleSave} />
+        <View style={{ height: 10 }} />
+        <Button title="Peruuta" onPress={() => router.back()} />
 
-      {/* MODAL */}
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <FlatList
-              data={supervisors}
-              keyExtractor={(item) => item.id}
-              renderItem={renderManagerItem}
-            />
+        {/* MODAL */}
+        <Modal visible={modalVisible} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={supervisors}
+                keyExtractor={(item) => item.id}
+                renderItem={renderManagerItem}
+              />
 
-            {/* viiva viimeisen nimen jälkeen*/}
-            <View style={styles.divider} />
+              {/* viiva viimeisen nimen jälkeen*/}
+              <View style={styles.divider} />
 
-            <Button title="Peruuta" onPress={() => setModalVisible(false)} />
+              <Button title="Peruuta" onPress={() => setModalVisible(false)} />
+            </View>
           </View>
-        </View>
-      </Modal>
-    </View>
+        </Modal>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -224,6 +227,9 @@ export default function EditEmployee() {
 // -------------------------
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 24,

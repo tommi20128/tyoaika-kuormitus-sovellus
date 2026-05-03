@@ -1,11 +1,9 @@
 // app/(supervisor)/(tabs)/profile.tsx
 import { PasswordChange } from '@/components/profile/PasswordChange';
 import { UserInfoCard } from '@/components/profile/UserInfoCard';
-import CustomButton from '@/components/ui/CustomButton';
 import { useAuth } from '@/context/AuthContext';
 import { useProfileData } from '@/hooks/useProfileData';
-import { router } from 'expo-router';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -13,13 +11,6 @@ export default function ProfilePage() {
 
   if (authLoading || loading) return null;
   if (!user) return null;
-
-  const handleLogout = () => {
-    Alert.alert('Vahvista', 'Haluatko varmasti kirjautua ulos?', [
-      { text: 'Peruuta', style: 'cancel' },
-      { text: 'Kirjaudu ulos', onPress: () => router.replace('/') }
-    ]);
-  };
 
   return (
     <View style={styles.container}>
@@ -30,12 +21,12 @@ export default function ProfilePage() {
         title={profile.title}
       />
 
-            {/* Salasanan vaihto */}
-            <View style={styles.card}>
-              <PasswordChange />
-            </View>
-      
-         
+      {/* Salasanan vaihto */}
+      <View style={styles.card}>
+        <PasswordChange />
+      </View>
+
+
     </View>
   );
 }
@@ -45,13 +36,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     padding: 24,
-        width: "100%",
-   
+    width: "100%",
+
   },
   button: {
     width: "100%",
     height: 42,
-    backgroundColor: "#1E3A8A", 
+    backgroundColor: "#1E3A8A",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -67,7 +58,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-   card: {
+  card: {
     width: "100%",
     backgroundColor: "#FFFFFF",
     borderRadius: 14,

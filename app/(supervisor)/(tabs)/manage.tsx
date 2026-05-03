@@ -7,7 +7,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { act, useState } from "react";
+import { useState } from "react";
 import { router } from "expo-router";
 import { useUsers } from "@/hooks/useUsers";
 import { doc, deleteDoc, collection, getDocs } from "firebase/firestore";
@@ -24,7 +24,7 @@ export default function ManageEmployees() {
     router.push("/(supervisor)/add-employee");
   };
 
-  const editEmployee = (id: string) => {
+  const editEmployee = (id: string, name: string) => {
     router.push(`/(supervisor)/edit-employee/${id}`);
   };
 
@@ -78,7 +78,7 @@ export default function ManageEmployees() {
         >
           <Text style={mode === "mine" && styles.activeText}>
             Omat alaiset
-            </Text>
+          </Text>
         </Pressable>
 
         <Pressable
@@ -87,7 +87,7 @@ export default function ManageEmployees() {
         >
           <Text style={mode === "all" && styles.activeText}>
             Kaikki
-            </Text>
+          </Text>
         </Pressable>
       </View>
 
@@ -114,7 +114,9 @@ export default function ManageEmployees() {
             <View style={{ flexDirection: "row", gap: 10 }}>
               <Pressable
                 style={styles.editButton}
-                onPress={() => editEmployee(item.id)}
+                onPress={() => editEmployee(item.id, item.firstName + " " + item.lastName)}
+
+
               >
                 <Text style={styles.editText}>Muokkaa</Text>
               </Pressable>

@@ -3,9 +3,7 @@ import { PasswordChange } from '@/components/profile/PasswordChange';
 import { UserInfoCard } from '@/components/profile/UserInfoCard';
 import { useAuth } from '@/context/AuthContext';
 import { useProfileData } from '@/hooks/useProfileData';
-import CustomButton from "@/components/ui/CustomButton";
-import { router } from 'expo-router';
-import { Alert, Pressable, StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -13,14 +11,6 @@ export default function ProfilePage() {
 
   if (authLoading || loading) return null;
   if (!user) return null;
-
-
-  const handleLogout = () => {
-    Alert.alert('Vahvista', 'Haluatko varmasti kirjautua ulos?', [
-      { text: 'Peruuta', style: 'cancel' },
-      { text: 'Kirjaudu ulos', onPress: () => router.replace('/') }
-    ]);
-  };
 
   return (
     <ScrollView

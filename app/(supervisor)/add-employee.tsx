@@ -120,7 +120,6 @@ export default function AddEmployee() {
         firstName,
         lastName,
         email,
-        password,           // HUOM: pelkästään testauksessa
         title,
         role,               // supervisor tai employee
         manager: role === "employee" ? manager?.firstName + " " + manager?.lastName : null,
@@ -194,7 +193,7 @@ export default function AddEmployee() {
         }}
       >
         <Text style={role === "supervisor" && styles.activeText}>
-        Esihenkilö
+          Esihenkilö
         </Text>
       </Pressable>
     </View>
@@ -211,7 +210,7 @@ export default function AddEmployee() {
         style={styles.input}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={{ color: "#000"}}>
+        <Text style={{ color: "#000" }}>
           {manager ? `${manager.firstName} ${manager.lastName}` : "Valitse esimies"}
         </Text>
       </Pressable>
@@ -261,9 +260,9 @@ export default function AddEmployee() {
                 renderItem={renderManagerItem}
               />
 
-                {/* viiva viimeisen nimen jälkeen*/}
-                <View style={styles.divider} />
-              
+              {/* viiva viimeisen nimen jälkeen*/}
+              <View style={styles.divider} />
+
               <Button title="Peruuta" onPress={() => setModalVisible(false)} />
             </View>
           </View>
@@ -357,7 +356,7 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     height: 42,
-    backgroundColor: "#1E3A8A", 
+    backgroundColor: "#1E3A8A",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
