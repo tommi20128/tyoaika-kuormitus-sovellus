@@ -1,9 +1,11 @@
 // app/(supervisor)/_layout.tsx
 
 import { Stack } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SupervisorLayout() {
   return (
+     <SafeAreaView style={{ flex: 1 }}>
     <Stack >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
@@ -21,6 +23,7 @@ export default function SupervisorLayout() {
           title: (route.params as EmployeeRouteParams)?.name || "Muokkaa",
         })} />
     </Stack>
+    </SafeAreaView>
   );
 }
 

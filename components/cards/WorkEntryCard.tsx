@@ -18,7 +18,7 @@ export default function WorkEntryCard({ entry, showStress = true, type }: Props)
   const entryType = entry.type ?? type ?? 'work';
 
   return (
-    <InfoCard title={formatReverseFullDate(parseLocalDate(entry.date))}>
+    <InfoCard title={`Tänään: ${formatReverseFullDate(parseLocalDate(entry.date))}`}>
 
       {/* ------------------------- */}
       {/* PYHÄPÄIVÄ */}

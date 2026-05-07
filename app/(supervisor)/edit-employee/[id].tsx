@@ -186,7 +186,7 @@ export default function EditEmployee() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>Muokkaa työntekijää</Text>
+        <Text style={styles.title}>Muokkaa {firstName} {lastName}</Text>
 
         <TextInput style={styles.input} value={firstName} onChangeText={setFirstName} placeholder="Etunimi" />
         <TextInput style={styles.input} value={lastName} onChangeText={setLastName} placeholder="Sukunimi" />
@@ -229,6 +229,7 @@ export default function EditEmployee() {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
+    
   },
   container: {
     flex: 1,

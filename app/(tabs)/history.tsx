@@ -112,7 +112,7 @@ export default function HistoryPage({ employeeId }: HistoryPageProps) {
   // -------------------------
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Historia</Text>
+      <Text style={styles.title}>Työhistoria</Text>
 
       {/* ToggleButton viikko/kuukausi */}
       <ViewToggleButton
