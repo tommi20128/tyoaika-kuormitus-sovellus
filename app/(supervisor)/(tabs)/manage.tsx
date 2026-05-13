@@ -68,7 +68,7 @@ export default function ManageEmployees() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Työntekijähallinta</Text>
+      <Text style={styles.title}>Lisää/muokkaa/poista</Text>
 
       {/* 🔄 Toggle */}
       <View style={styles.toggleContainer}>

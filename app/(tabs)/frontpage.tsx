@@ -30,7 +30,7 @@ export default function HomePage() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.welcome}>
-        Tervetuloa {firstName}!
+        Yhteenvedot
       </Text>
 
       {/* Empty state: Näytetään tämä, jos käyttäjällä ei ole vielä yhtään merkintää.
@@ -44,14 +44,14 @@ export default function HomePage() {
             <WorkEntryCard entry={todayEntry} />
           ) : (
             <EmptyCard
-              title="Tämä päivä"
+              title="Tämä päivä:"
               message="Tälle päivälle ei ole vielä kirjausta" />
           )}
 
           {/* Viikkonäkymä: Näyttää kuluvan viikon yhteenvedon (tunnit, keskiarvot, tavoite-ero).*/}
           {weekSummary && (
             <SummaryCard
-              title="Tämä viikko"
+              title="Tämä viikko:"
               summary={weekSummary}
               targetHours={TARGET_WEEK_HOURS}
             />
@@ -60,7 +60,7 @@ export default function HomePage() {
           {/*Kuukausinäkymä: Näyttää kuluvan kuukauden yhteenvedon.*/}
           {monthSummary && (
             <SummaryCard
-              title="Tämä kuukausi"
+              title="Tämä kuukausi:"
               summary={monthSummary}
               targetHours={TARGET_MONTH_HOURS}
             />
@@ -70,7 +70,7 @@ export default function HomePage() {
           {/*Kokonaisnäkymä (työura): Näyttää kaikki tehdyt tunnit suhteessa tavoitteeseen.*/}
           {totalSummary && (
             <SummaryCard
-              title="Työtuntisaldo"
+              title="Työtuntisaldo:"
               summary={totalSummary}
               targetHours={careerTargetHours}
             />
