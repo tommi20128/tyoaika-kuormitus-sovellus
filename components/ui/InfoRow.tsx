@@ -29,15 +29,22 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
+    alignItems: "flex-start",
+    marginBottom: 4,
+    gap: 12,
   },
   label: {
     fontSize: 16,
     color: "#000",
+    flexShrink: 0,
   },
   value: {
     fontSize: 16,
     fontWeight: "600",
+    flex: 1,
+    flexShrink: 1,
+    flexWrap: "wrap",
+    textAlign: "right",
+    
   },
 });

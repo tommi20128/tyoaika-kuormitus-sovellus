@@ -104,7 +104,7 @@ export default function ManageEmployees() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.employeeRow}>
-            <View>
+            <View style={styles.left}>
               <Text style={styles.name}>
                 {item.firstName} {item.lastName}
               </Text>
@@ -115,8 +115,6 @@ export default function ManageEmployees() {
               <Pressable
                 style={styles.editButton}
                 onPress={() => editEmployee(item.id, item.firstName + " " + item.lastName)}
-
-
               >
                 <Text style={styles.editText}>Muokkaa</Text>
               </Pressable>
@@ -212,6 +210,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#1E3A8A",
     marginTop: 8,
+    flexShrink: 1,
   },
 
   deleteButton: {
@@ -254,4 +253,9 @@ const styles = StyleSheet.create({
   activeText: {
     color: "#fff",
   },
+
+  left: {
+  flex: 1,
+  marginRight: 12,
+}
 });

@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',           // kortti vie koko leveyden
     marginBottom: 32,
+    alignSelf: 'stretch',
     paddingHorizontal: 16,   // hieman sisäistä marginaalia
     // alignItems jätetty pois (stretch oletus)
   },
